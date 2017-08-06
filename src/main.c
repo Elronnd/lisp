@@ -2,28 +2,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
-char *getl(void) {
-	size_t tmplen = 0, jumpsize = 2048;
-	char *tmp = calloc(sizeof(char), jumpsize);
-	char c;
-
-	while ((c = getchar()) != '\n') {
-		if (++tmplen > jumpsize) {
-			tmp = realloc(tmp, jumpsize*2);
-			jumpsize *= 2;
-		}
-
-		tmp[tmplen-1] = c;
-	}
-
-	tmp = realloc(tmp, tmplen+1);
-
-	tmp[tmplen] = 0;
-
-	return tmp;
-}
-
+#include <editline/readline.h>
 
 
 int main(void) {
@@ -31,9 +10,14 @@ int main(void) {
 	char *buf;
 
 	while (!done) {
-		printf("repl> ");
+		buf = readline("repl> ");
 
-		buf = getl();
+		if (buf == NULL) {
+			putchar('\n');
+			break;
+		}
+
+		add_history(buf);
 
 		if (!strcmp(buf, "quit"))
 			done = true;
