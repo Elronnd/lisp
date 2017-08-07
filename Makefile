@@ -1,7 +1,7 @@
 CC = clang
 LD ?= $(CC)
 
-CFLAGS-base = -I../include -ledit -Wall -Wextra -pedantic
+CFLAGS-base = -I../include -ledit -Wall -Wextra -pedantic -std=c11
 
 CFLAGS-debug = -ggdb -O0 -g3
 CFLAGS-normal = -g -O2

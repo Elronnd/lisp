@@ -82,19 +82,18 @@ long parseast(Ast ast) {
 */
 
 Ast strtoast(char *str, size_t *index) {
-#define munch_whitespace do { \
-		while (isspace(str[*index]) && str[*index]) { \
-			if (!str[*index]) \
-				error("Unexpected end of code"); \
-			(*index)++; \
-		} \
-	} while (0);
+#define munch_whitespace \
+	while (isspace(str[*index])) { \
+		(*index)++; \
+		if (str[*index] == '\0') \
+			error("Unexpected end of code."); \
+	} \
 
 #define slurpstr(dest) do { \
 		size_t len = 1; \
 		dest = calloc(1, len); \
 \
-		while (!isspace(str[*index]) && (str[*index] != ')') && (str[*index] != '(') && str[*index]) { \
+		while (!isspace(str[*index]) && (str[*index] != ')') && (str[*index] != '(')) { \
 			if (!str[*index]) \
 				error("Unexpected end of code"); \
 \
@@ -107,7 +106,6 @@ Ast strtoast(char *str, size_t *index) {
 
 
 	Ast tmp = {.isval = false, .numchilds = 0};
-	size_t size = 0;
 
 	munch_whitespace;
 
@@ -120,14 +118,7 @@ Ast strtoast(char *str, size_t *index) {
 
 	tmp.op = NULL;
 
-	// slurp characters one at a time into op
-	while (str[*index] != ')' && !isspace(str[*index])) {
-		if (!str[*index])
-			error("Unexpected end of code");
-
-		tmp.op = realloc(tmp.op, ++size);
-		strcat(tmp.op, (char[]){str[(*index)++], 0});
-	}
+	slurpstr(tmp.op);
 
 	munch_whitespace;
 
@@ -153,8 +144,9 @@ precheck:
 
 int main(void) {
 	size_t foo = 0;
-	Ast a = strtoast("(foo bar baz)", &foo);
-	printf("%s", a.childs[0].val);
+	Ast a = strtoast("(foo bar baz biz booze fooze)", &foo);
+	printast(a);
+//	printf("%s", a.childs[4].val);
 }
 
 /*
