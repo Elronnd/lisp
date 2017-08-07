@@ -4,4 +4,6 @@
 .*.swm
 .*.swl
 
-src/main
+lisp
+
+*.o
