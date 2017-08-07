@@ -11,7 +11,7 @@ typedef struct Ast {
 			size_t numchilds;
 		};
 
-		long val;
+		char *val;
 	};
 
 
@@ -38,3 +38,7 @@ static function builtins[] = {
         {"*", builtin_mul},
         {"/", builtin_div}
 };
+
+
+extern void error(const char *file, size_t line, const char *fmt, ...);
+#define error(...) error(__FILE__, __LINE__, __VA_ARGS__)

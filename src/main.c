@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
-#include <stdlib.h>
+#include <stdlib.h>  // malloc
+#include <ctype.h>   // isspace
 #include <editline/readline.h>
 
 #include "build-lisp.h"
@@ -36,7 +37,7 @@
 
 void printast(Ast ast) {
 	if (ast.isval) {
-		printf("%ld", ast.val);
+		printf("%s", ast.val);
 	} else {
 		printf("(%s ", ast.op);
 		for (size_t i = 0; i < ast.numchilds; i++) {
@@ -61,6 +62,7 @@ long callfunc(const char *name, long *in, size_t numasts) {
 	}
 }
 
+/*
 long parseast(Ast ast) {
 	if (ast.isval) {
 		return ast.val;
@@ -77,8 +79,85 @@ long parseast(Ast ast) {
 		return tmp;
 	}
 }
+*/
+
+Ast strtoast(char *str, size_t *index) {
+#define munch_whitespace do { \
+		while (isspace(str[*index]) && str[*index]) { \
+			if (!str[*index]) \
+				error("Unexpected end of code"); \
+			(*index)++; \
+		} \
+	} while (0);
+
+#define slurpstr(dest) do { \
+		size_t len = 1; \
+		dest = calloc(1, len); \
+\
+		while (!isspace(str[*index]) && (str[*index] != ')') && (str[*index] != '(') && str[*index]) { \
+			if (!str[*index]) \
+				error("Unexpected end of code"); \
+\
+			dest = realloc(dest, ++len); \
+			dest[len-2] = str[(*index)++]; \
+			dest[len-1] = 0; \
+		} \
+	} while (0);
 
 
+
+	Ast tmp = {.isval = false, .numchilds = 0};
+	size_t size = 0;
+
+	munch_whitespace;
+
+	if (str[*index] != '(')
+		error("Expected (, but instead got %c, at index %zu!", str[*index], *index);
+
+	(*index)++; // get past the (
+
+	munch_whitespace;
+
+	tmp.op = NULL;
+
+	// slurp characters one at a time into op
+	while (str[*index] != ')' && !isspace(str[*index])) {
+		if (!str[*index])
+			error("Unexpected end of code");
+
+		tmp.op = realloc(tmp.op, ++size);
+		strcat(tmp.op, (char[]){str[(*index)++], 0});
+	}
+
+	munch_whitespace;
+
+
+precheck:
+	if (str[*index] == ')') {
+		return tmp;
+	} else if (str[*index] == '(') {
+		tmp.childs = realloc(tmp.childs, ++tmp.numchilds);
+		tmp.childs[tmp.numchilds-1] = strtoast(str, index);
+		goto precheck;
+	} else {
+		tmp.childs = realloc(tmp.childs, ++tmp.numchilds);
+		tmp.childs[tmp.numchilds-1].isval = true;
+		slurpstr(tmp.childs[tmp.numchilds-1].val);
+		munch_whitespace;
+		goto precheck;
+	}
+
+	return tmp;
+}
+
+
+int main(void) {
+	size_t foo = 0;
+	Ast a = strtoast("(foo bar baz)", &foo);
+	printf("%s", a.childs[0].val);
+}
+
+/*
 int main(void) {
 	Ast ast;
 
@@ -106,6 +185,7 @@ int main(void) {
 	printast(ast);
 	putchar('\n');
 }
+*/
 
 #if 0
 int main(void) {
