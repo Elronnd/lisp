@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <editline/readline.h>
 
+#include "build-lisp.h"
+
 /*
  * (+ (* 5 7) 3)
  *
@@ -32,31 +34,16 @@
  */
 
 
-typedef struct Ast {
-	bool isval;
-
-	union {
-		// c11 ftw!
-		struct {
-			struct Ast *childs;
-			size_t numchilds;
-		};
-
-		long val;
-	};
-
-
-	char op;
-} Ast;
-
 void printast(Ast ast) {
-
 	if (ast.isval) {
 		printf("%ld", ast.val);
 	} else {
-		printf("(%c ", ast.op);
+		printf("(%s ", ast.op);
 		for (size_t i = 0; i < ast.numchilds; i++) {
 			printast(ast.childs[i]);
+
+			// print a space in between most expressions, but not after
+			// the last one -- it should butt up against the closing )
 			if (i < ast.numchilds-1)
 				putchar(' ');
 		}
@@ -66,6 +53,13 @@ void printast(Ast ast) {
 }
 
 
+long callfunc(const char *name, long *in, size_t numasts) {
+	for (size_t i = 0; i < sizeof(builtins); i++) {
+		if (!strcmp(name, builtins[i].name)) {
+			return builtins[i].func(in, numasts);
+		}
+	}
+}
 
 long parseast(Ast ast) {
 	if (ast.isval) {
@@ -78,23 +72,18 @@ long parseast(Ast ast) {
 			vals[i] = parseast(ast.childs[i]);
 		}
 
-		switch (ast.op) {
-			case '+': tmp = vals[0] + vals[1]; break;
-			case '-': tmp = vals[0] - vals[1]; break;
-			case '*': tmp = vals[0] * vals[1]; break;
-			case '/': tmp = vals[0] / vals[1]; break;
-			default: printf("Unknown operation %c!!", ast.op); tmp = -1;
-		}
+		tmp = callfunc(ast.op, vals, ast.numchilds);
 
 		return tmp;
 	}
 }
 
+
 int main(void) {
 	Ast ast;
 
 	ast.isval = false;
-	ast.op = '+';
+	ast.op = "+";
 	ast.childs = malloc(sizeof(ast) * 2);
 	ast.numchilds = 2;
 
@@ -102,7 +91,7 @@ int main(void) {
 	ast.childs[0].val = 3;
 
 	ast.childs[1].isval = false;
-	ast.childs[1].op = '*';
+	ast.childs[1].op = "*";
 	ast.childs[1].childs = malloc(sizeof(ast) * 2);
 	ast.childs[1].numchilds = 2;
 
