@@ -49,6 +49,24 @@ typedef struct Ast {
 	char op;
 } Ast;
 
+void printast(Ast ast) {
+
+	if (ast.isval) {
+		printf("%ld", ast.val);
+	} else {
+		printf("(%c ", ast.op);
+		for (size_t i = 0; i < ast.numchilds; i++) {
+			printast(ast.childs[i]);
+			if (i < ast.numchilds-1)
+				putchar(' ');
+		}
+
+		putchar(')');
+	}
+}
+
+
+
 long parseast(Ast ast) {
 	if (ast.isval) {
 		return ast.val;
@@ -71,31 +89,6 @@ long parseast(Ast ast) {
 		return tmp;
 	}
 }
-/* (+ (* 5 7) 3)
- *
- * isval = false
- * op = '+'
- * childs = :
- *     { isval = true
- *       val = 3
- *     }
- *     { isval = false
- *       op = '*'
- *       childs = :
- *       { isval = true
- *         val = 5
- *       }      
- *       { isval = true
- *         val = 7
- *       }      
- *     }
- *
- *     To evaluate:     
- *       if isexpr:     
- *         map/reduce eval() of op on each child
- *       else:  
- *         return val   
- */                     
 
 int main(void) {
 	Ast ast;
@@ -118,17 +111,14 @@ int main(void) {
 	ast.childs[1].childs[1].isval = true;
 	ast.childs[1].childs[1].val = 7;
 
-	printf("Values is %ld", parseast(ast));
+	printf("Values is %ld\n", parseast(ast));
+
+	printf("Formatted: ");
+	printast(ast);
+	putchar('\n');
 }
 
 #if 0
-
-
-
-
-
-
-
 int main(void) {
 	bool done = false;
 	char *buf;
