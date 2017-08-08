@@ -83,7 +83,7 @@ static function builtins[] = {
 Ast tokenize(const char *str, size_t *index);
 
 
-extern void error(const char *file, size_t line, const char *fmt, ...);
-#define error(...) error(__FILE__, __LINE__, __VA_ARGS__)
+extern void _error(const char *file, size_t line, const char *fmt, ...);
+#define error(...) _error(__FILE__, __LINE__, __VA_ARGS__)
 
 #endif
