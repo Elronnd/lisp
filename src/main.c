@@ -38,7 +38,7 @@ void printast(Ast ast) {
 	if (ast.isval) {
 		char buf[2048];
 		valtostr(ast.val, buf);
-		printf(buf);
+		printf("%s", buf);
 	} else {
 		printf("(%s ", ast.op);
 		for (size_t i = 0; i < ast.numchilds; i++) {
@@ -67,21 +67,22 @@ static bool isin(int needle, int *haystack, int numstack) {
 Lval callfunc(const char *name, Lval *in, size_t numasts) {
 	size_t j;
 
-	for (size_t i = 0; i < sizeof(builtins); i++) {
+	for (size_t i = 0; i < SIZE(builtins); i++) {
 		if (!strcmp(name, builtins[i].name)) {
 			for (j = 0; j < numasts; j++) {
-				if (!isin(in[j].type, builtins[i].validtypes, SIZE(builtins[i].validtypes))) {
+				if (!isin(in[j].type, (int*)builtins[i].validtypes, SIZE(builtins[i].validtypes))) {
 					goto postfor;
 				}
 			}
 
 			return builtins[i].func(in, numasts);
 		}
-
-		continue;
-postfor:
-		error("Unexpected type %d, for function %s.", in[j].type, name);
 	}
+
+	error("Unknown function %s", name);
+
+postfor:
+	error("Unexpected type %d, for function %s.", in[j].type, name);
 }
 
 

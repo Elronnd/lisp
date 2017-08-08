@@ -86,7 +86,7 @@ void valtostr(Lval val, char bufout[2048]);
 void parseast(Ast *ast);
 
 
-extern void _error(const char *file, size_t line, const char *fmt, ...);
+_Noreturn extern void _error(const char *file, size_t line, const char *fmt, ...);
 #define error(...) _error(__FILE__, __LINE__, __VA_ARGS__)
 
 #endif
