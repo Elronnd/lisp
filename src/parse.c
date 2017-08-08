@@ -60,6 +60,14 @@ static Lval parse_lval(Lval val) {
 			free(val.str);
 
 			return tmp;
+		} else if ((val.undecided[0] == '#') && (strlen(val.undecided) == 2) && (val.undecided[1] == 'f' || val.undecided[1] == 't')) {
+			tmp.type = LTYPE_BOOL;
+			switch (val.undecided[1]) {
+				case 'f': tmp.boolean = false; break;
+				case 't': tmp.boolean = true; break;
+			}
+
+			return tmp;
 		} else if (couldbeint(val.undecided, &tmp.integer)) {
 			tmp.type = LTYPE_INT;
 			return tmp;
