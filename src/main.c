@@ -71,7 +71,7 @@ Lval callfunc(const char *name, Lval *in, lint numasts) {
 		if (!strcmp(name, builtins[i].name)) {
 			for (j = 0; j < numasts; j++) {
 				if (!isin(in[j].type, (int*)builtins[i].validtypes, SIZE(builtins[i].validtypes)))
-					goto wrongtype;
+					goto continueout;
 			}
 
 			if (((numasts < builtins[i].minargs) && (builtins[i].minargs != -1)) ||
@@ -81,13 +81,13 @@ Lval callfunc(const char *name, Lval *in, lint numasts) {
 
 
 			return builtins[i].func(in, numasts);
+continueout:
+			continue;
 		}
 	}
 
 	error("Unknown function %s", name);
 
-wrongtype:
-	error("Unexpected type %d, for function %s.", in[j].type, name);
 wrongargs:
 	error("Got %d args when the expected range was %d to %d", numasts, builtins[i].minargs, builtins[i].maxargs);
 }

@@ -65,20 +65,46 @@ extern void printast(Ast ast);
 
 
 // builtins.c
-extern Lval builtin_add(Lval *vals, lint numvals);
-extern Lval builtin_sub(Lval *vals, lint numvals);
-extern Lval builtin_mul(Lval *vals, lint numvals);
-extern Lval builtin_div(Lval *vals, lint numvals);
-extern Lval builtin_concat(Lval *vals, lint numvals);
-extern Lval builtin_cmp(Lval *vals, lint numvals);
+extern Lval builtin_intadd(Lval *vals, lint numvals);
+extern Lval builtin_floatadd(Lval *vals, lint numvals);
+
+extern Lval builtin_intsub(Lval *vals, lint numvals);
+extern Lval builtin_floatsub(Lval *vals, lint numvals);
+
+extern Lval builtin_intmul(Lval *vals, lint numvals);
+extern Lval builtin_floatmul(Lval *vals, lint numvals);
+
+
+extern Lval builtin_intdiv(Lval *vals, lint numvals);
+extern Lval builtin_floatdiv(Lval *vals, lint numvals);
+
+extern Lval builtin_strcat(Lval *vals, lint numvals);
+
+extern Lval builtin_intcmp(Lval *vals, lint numvals);
+extern Lval builtin_floatcmp(Lval *vals, lint numvals);
+extern Lval builtin_boolcmp(Lval *vals, lint numvals);
+extern Lval builtin_strcmp(Lval *vals, lint numvals);
+
 
 static function builtins[] = {
-        {"+", builtin_add, .minargs = 1, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
-        {"-", builtin_sub, .minargs = 1, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
-        {"*", builtin_mul, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
-        {"/", builtin_div, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
-	{"~", builtin_concat, .minargs = 1, .maxargs = -1, {LTYPE_STR}},
-	{"=", builtin_cmp, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT, LTYPE_BOOL, LTYPE_STR}}
+        {"+", builtin_intadd, .minargs = 1, .maxargs = -1, {LTYPE_INT}},
+        {"+", builtin_floatadd, .minargs = 1, .maxargs = -1, {LTYPE_FLOAT, LTYPE_INT}},
+
+        {"-", builtin_intsub, .minargs = 1, .maxargs = -1, {LTYPE_INT}},
+        {"-", builtin_floatsub, .minargs = 1, .maxargs = -1, {LTYPE_FLOAT, LTYPE_INT}},
+
+        {"*", builtin_intmul, .minargs = 2, .maxargs = -1, {LTYPE_INT}},
+        {"*", builtin_floatmul, .minargs = 2, .maxargs = -1, {LTYPE_FLOAT, LTYPE_INT}},
+
+        {"/", builtin_intdiv, .minargs = 2, .maxargs = -1, {LTYPE_INT}},
+        {"/", builtin_floatdiv, .minargs = 2, .maxargs = -1, {LTYPE_FLOAT, LTYPE_INT}},
+
+	{"~", builtin_strcat, .minargs = 1, .maxargs = -1, {LTYPE_STR}},
+
+	{"=", builtin_intcmp, .minargs = 2, .maxargs = -1, {LTYPE_INT}},
+	{"=", builtin_floatcmp, .minargs = 2, .maxargs = -1, {LTYPE_FLOAT, LTYPE_INT}},
+	{"=", builtin_boolcmp, .minargs = 2, .maxargs = -1, {LTYPE_BOOL}},
+	{"=", builtin_strcmp, .minargs = 2, .maxargs = -1, {LTYPE_STR}}
 };
 
 
