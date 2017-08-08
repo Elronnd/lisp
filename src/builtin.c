@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 
 Lval builtin_intadd(Lval *vals, size_t numvals) {
 	Lval tmp = {.type = LTYPE_INT, .integer = 0};
@@ -182,4 +183,29 @@ Lval builtin_div(Lval *vals, size_t numvals) {
 		case LTYPE_INT: return builtin_intdiv(vals, numvals);
 		case LTYPE_FLOAT: return builtin_floatdiv(vals, numvals);
 	}
+}
+
+
+Lval builtin_concat(Lval *vals, size_t numvals) {
+	if (numvals == 0)
+		error("Required at least one parameter for concatenation");
+
+	Lval tmp = {.type = LTYPE_STR, .str = NULL};
+
+	for (size_t i = 0; i < numvals; i++) {
+		if (vals[i].type != LTYPE_STR) {
+			char buf[2048];
+			valtostr(vals[i], buf);
+			error("Unexpected type %d (can only be STR), for concatenation, in variable %s", vals[i].type, buf);
+		}
+
+		tmp.str = realloc(tmp.str, strlen(tmp.str) + strlen(vals[i].str) + 1);
+		
+		if (i == 0)
+			tmp.str[0] = '\0';
+
+		strcat(tmp.str, vals[i].str);
+	}
+
+	return tmp;
 }

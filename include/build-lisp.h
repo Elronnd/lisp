@@ -72,12 +72,14 @@ extern Lval builtin_add(Lval *vals, size_t numvals);
 extern Lval builtin_sub(Lval *vals, size_t numvals);
 extern Lval builtin_mul(Lval *vals, size_t numvals);
 extern Lval builtin_div(Lval *vals, size_t numvals);
+extern Lval builtin_concat(Lval *vals, size_t numvals);
 
 static function builtins[] = {
         {"+", builtin_add},
         {"-", builtin_sub},
         {"*", builtin_mul},
-        {"/", builtin_div}
+        {"/", builtin_div},
+	{"~", builtin_concat}
 };
 
 
