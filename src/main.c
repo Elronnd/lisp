@@ -1,11 +1,10 @@
+#include "build-lisp.h"
+
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
-#include <stdlib.h>  // malloc
-#include <ctype.h>   // isspace
+#include <stdlib.h>  // malloc&friends
 #include <editline/readline.h>
 
-#include "build-lisp.h"
 
 /*
  * (+ (* 5 7) 3)
@@ -54,7 +53,7 @@ void printast(Ast ast) {
 }
 
 
-long callfunc(const char *name, long *in, size_t numasts) {
+Lval callfunc(const char *name, Lval *in, size_t numasts) {
 	for (size_t i = 0; i < sizeof(builtins); i++) {
 		if (!strcmp(name, builtins[i].name)) {
 			return builtins[i].func(in, numasts);
@@ -62,24 +61,19 @@ long callfunc(const char *name, long *in, size_t numasts) {
 	}
 }
 
-/*
-long parseast(Ast ast) {
+Lval parseast(Ast ast) {
 	if (ast.isval) {
 		return ast.val;
 	} else {
-		long *vals = malloc(sizeof(long) * ast.numchilds);
-		long tmp;
+		Lval *vals = malloc(sizeof(Lval) * ast.numchilds);
 
 		for (size_t i = 0; i < ast.numchilds; i++) {
 			vals[i] = parseast(ast.childs[i]);
 		}
 
-		tmp = callfunc(ast.op, vals, ast.numchilds);
-
-		return tmp;
+		return callfunc(ast.op, vals, ast.numchilds);
 	}
 }
-*/
 
 
 
@@ -101,7 +95,8 @@ int main(void) {
 		if (!strcmp(buf, "quit"))
 			break;
 
-		printast(tokenize(buf, &foo));
+		parseast(tokenize(buf, &foo));
+		
 		putchar('\n');
 
 		free(buf);

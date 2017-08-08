@@ -57,7 +57,8 @@ precheck:
 	} else {
 		tmp.childs = realloc(tmp.childs, (++tmp.numchilds) * sizeof(Ast));
 		tmp.childs[tmp.numchilds-1].isval = true;
-		slurpstr(tmp.childs[tmp.numchilds-1].val);
+		tmp.childs[tmp.numchilds-1].val.type = LTYPE_UNDECIDED;
+		slurpstr(tmp.childs[tmp.numchilds-1].val.undecided);
 		munch_whitespace;
 		goto precheck;
 	}
