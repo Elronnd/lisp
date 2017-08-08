@@ -54,14 +54,34 @@ void printast(Ast ast) {
 	}
 }
 
+static bool isin(int needle, int *haystack, int numstack) {
+	for (int i = 0; i < numstack; i++) {
+		if (needle == haystack[i])
+			return true;
+	}
+
+	return false;
+}
+
 
 Lval callfunc(const char *name, Lval *in, size_t numasts) {
+	size_t j;
+
 	for (size_t i = 0; i < sizeof(builtins); i++) {
-		if (!strcmp(name, builtins[i].name)) {
+		if (!strcmp(name, builtins[i].name) && isin(in[i].type, builtins[i].validtypes, 2)) {
+			for (j = 0; j < numasts; j++) {
+				if (!isin(in[j].type, builtins[i].validtypes, SIZE(builtins[i].validtypes))) {
+					goto postfor;
+				}
+			}
+
 			return builtins[i].func(in, numasts);
 		}
+postfor:
+		error("Unexpected type %d, for function %s.", in[j].type, name);
 	}
 }
+
 
 Lval runast(Ast ast) {
 	if (ast.isval) {

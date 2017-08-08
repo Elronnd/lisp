@@ -6,9 +6,11 @@
 #ifndef BUILDLISP_H
 #define BUILDLISP_H
 
+#define SIZE(x)	(sizeof(x) / sizeof(x[0]))
+
 
 typedef enum {
-	LTYPE_UNDECIDED, // char*.  We have lazy parsing, which can be good, or bad, just like python.
+	LTYPE_UNDECIDED = 1, // char*.  We have lazy parsing, which can be good, or bad, just like python.
 			// Good for performance, but bad if something like this happens: (if true (+ 5 7) (- 5 "asdf")).  That's not an error
 	LTYPE_INT,   // long long
 	LTYPE_FLOAT, // long double
@@ -26,31 +28,23 @@ typedef long double real;
 typedef struct {
 	Ltype type;
 
-	union {
-		lint integer;
-		real lfloat;
-		char *str;
-		char *undecided;
-		void *raw;
-		char *varname;
-		Ast *ast;
-	};
+	lint integer;
+	real lfloat;
+	char *str;
+	char *undecided;
+	void *raw;
+	char *varname;
+	Ast *ast;
 } Lval;
 
 
 struct Ast {
 	bool isval;
 
-	union {
-		// c11 ftw!
-		struct {
-			struct Ast *childs;
-			size_t numchilds;
-		};
+	struct Ast *childs;
+	size_t numchilds;
 
-		Lval val;
-	};
-
+	Lval val;
 
 	char *op;
 };
@@ -58,6 +52,7 @@ struct Ast {
 typedef struct {
 	const char *name;
 	Lval (*func)(Lval *vals, size_t numvals);
+	Ltype validtypes[2];
 } function;
 
 
@@ -75,11 +70,11 @@ extern Lval builtin_div(Lval *vals, size_t numvals);
 extern Lval builtin_concat(Lval *vals, size_t numvals);
 
 static function builtins[] = {
-        {"+", builtin_add},
-        {"-", builtin_sub},
-        {"*", builtin_mul},
-        {"/", builtin_div},
-	{"~", builtin_concat}
+        {"+", builtin_add, {LTYPE_INT, LTYPE_FLOAT}},
+        {"-", builtin_sub, {LTYPE_INT, LTYPE_FLOAT}},
+        {"*", builtin_mul, {LTYPE_INT, LTYPE_FLOAT}},
+        {"/", builtin_div, {LTYPE_INT, LTYPE_FLOAT}},
+	{"~", builtin_concat, {LTYPE_STR, 0}}
 };
 
 
