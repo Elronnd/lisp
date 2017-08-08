@@ -15,6 +15,7 @@ typedef enum {
 	LTYPE_INT,   // long long
 	LTYPE_FLOAT, // long double
 	LTYPE_STR,   // char*
+	LTYPE_BOOL,  // bool
 	LTYPE_RAW,   // void*
 	LTYPE_VARIABLE, // char*
 	LTYPE_AST    // Ast
@@ -31,8 +32,9 @@ typedef struct {
 	lint integer;
 	real lfloat;
 	char *str;
-	char *undecided;
+	bool boolean;
 	void *raw;
+	char *undecided;
 	char *varname;
 	Ast *ast;
 } Lval;
@@ -68,13 +70,14 @@ extern Lval builtin_sub(Lval *vals, size_t numvals);
 extern Lval builtin_mul(Lval *vals, size_t numvals);
 extern Lval builtin_div(Lval *vals, size_t numvals);
 extern Lval builtin_concat(Lval *vals, size_t numvals);
+extern Lval builtin_cmp(Lval *vals, size_t numvals);
 
 static function builtins[] = {
         {"+", builtin_add, {LTYPE_INT, LTYPE_FLOAT}},
         {"-", builtin_sub, {LTYPE_INT, LTYPE_FLOAT}},
         {"*", builtin_mul, {LTYPE_INT, LTYPE_FLOAT}},
         {"/", builtin_div, {LTYPE_INT, LTYPE_FLOAT}},
-	{"~", builtin_concat, {LTYPE_STR, 0}}
+	{"~", builtin_concat, {LTYPE_STR}},
 };
 
 
