@@ -1,5 +1,6 @@
 // vim: ft=c
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef struct Ast {
 	bool isval;
@@ -27,6 +28,8 @@ typedef struct {
 extern long parseast(Ast ast);
 extern void printast(Ast ast);
 
+
+// builtins.c
 extern long builtin_add(long *asts, size_t numasts);
 extern long builtin_sub(long *asts, size_t numasts);
 extern long builtin_mul(long *asts, size_t numasts);
@@ -38,6 +41,10 @@ static function builtins[] = {
         {"*", builtin_mul},
         {"/", builtin_div}
 };
+
+
+// token.c
+Ast tokenize(const char *str, size_t *index);
 
 
 extern void error(const char *file, size_t line, const char *fmt, ...);
