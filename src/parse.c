@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <ctype.h>
+#include <stdio.h>
 
 static bool couldbeint(const char *str, lint *out) {
 	char *endptr;
@@ -65,6 +66,15 @@ static Lval parse_lval(Lval val) {
 		}
 	} else {
 		return val;
+	}
+}
+
+void printval(Lval val) {
+	switch (val.type) {
+		case LTYPE_INT: printf("%lld", val.integer); break;
+		case LTYPE_STR: printf("%s", val.str); break;
+		case LTYPE_FLOAT: printf("%Lf", val.lfloat); break;
+		default: printf("Unknown.");
 	}
 }
 

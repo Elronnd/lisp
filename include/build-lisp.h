@@ -85,6 +85,7 @@ static function builtins[] = {
 Ast tokenize(const char *str, size_t *index);
 
 // parse.c
+void printval(Lval val);
 void parseast(Ast *ast);
 
 

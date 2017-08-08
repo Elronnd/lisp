@@ -36,7 +36,7 @@
 
 void printast(Ast ast) {
 	if (ast.isval) {
-		printf("%s", ast.val.undecided);
+		printval(ast.val);
 	} else {
 		printf("(%s ", ast.op);
 		for (size_t i = 0; i < ast.numchilds; i++) {
@@ -101,9 +101,9 @@ int main(void) {
 
 		Lval t = runast(a);
 
-		printf("%Lf\n", t.lfloat);
+		printval(t);
 
-//		printf("Ast: "); printast(a);
+		printf("Ast: "); printast(a);
 
 		free(buf);
 	}
