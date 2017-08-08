@@ -14,6 +14,7 @@ typedef enum {
 	LTYPE_FLOAT, // long double
 	LTYPE_STR,   // char*
 	LTYPE_RAW,   // void*
+	LTYPE_VARIABLE, // char*
 	LTYPE_AST    // Ast
 } Ltype;
 
@@ -31,6 +32,7 @@ typedef struct {
 		char *str;
 		char *undecided;
 		void *raw;
+		char *varname;
 		Ast *ast;
 	};
 } Lval;
@@ -61,7 +63,7 @@ typedef struct {
 
 
 
-extern Lval parseast(Ast ast);
+extern Lval runast(Ast ast);
 extern void printast(Ast ast);
 
 
@@ -81,6 +83,9 @@ static function builtins[] = {
 
 // token.c
 Ast tokenize(const char *str, size_t *index);
+
+// parse.c
+void parseast(Ast *ast);
 
 
 extern void _error(const char *file, size_t line, const char *fmt, ...);

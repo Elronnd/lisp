@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-void error(const char *file, size_t line, const char *fmt, ...) {
+void _error(const char *file, size_t line, const char *fmt, ...) {
 	fprintf(stderr, "ERROR! %s:%zu: ", file, line);
 
 	va_list args;

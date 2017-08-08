@@ -61,14 +61,14 @@ Lval callfunc(const char *name, Lval *in, size_t numasts) {
 	}
 }
 
-Lval parseast(Ast ast) {
+Lval runast(Ast ast) {
 	if (ast.isval) {
 		return ast.val;
 	} else {
 		Lval *vals = malloc(sizeof(Lval) * ast.numchilds);
 
 		for (size_t i = 0; i < ast.numchilds; i++) {
-			vals[i] = parseast(ast.childs[i]);
+			vals[i] = runast(ast.childs[i]);
 		}
 
 		return callfunc(ast.op, vals, ast.numchilds);
@@ -97,12 +97,13 @@ int main(void) {
 
 		foo = 0;
 		Ast a = tokenize(buf, &foo);
+		parseast(&a);
 
-		Lval t = parseast(a);
+		Lval t = runast(a);
 
-		printf("%lld\n", t.integer);
+		printf("%Lf\n", t.lfloat);
 
-		printf("Ast: "); printast(a);
+//		printf("Ast: "); printast(a);
 
 		free(buf);
 	}

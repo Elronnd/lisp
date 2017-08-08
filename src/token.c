@@ -5,13 +5,12 @@
 
 
 Ast tokenize(const char *str, size_t *index) {
-#define munch_whitespace do {\
-		while (isspace(str[*index])) { \
-			(*index)++; \
-			if (str[*index] == '\0') \
-				error("Unexpected end of code."); \
-		} \
-	while (0)
+#define munch_whitespace \
+	while (isspace(str[*index])) { \
+		(*index)++; \
+		if (str[*index] == '\0') \
+			error("Unexpected end of code."); \
+	} \
 
 #define slurpstr(dest) do { \
 		size_t len = 1; \
