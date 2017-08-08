@@ -36,7 +36,9 @@
 
 void printast(Ast ast) {
 	if (ast.isval) {
-		printval(ast.val);
+		char buf[2048];
+		valtostr(ast.val, buf);
+		printf(buf);
 	} else {
 		printf("(%s ", ast.op);
 		for (size_t i = 0; i < ast.numchilds; i++) {
@@ -101,9 +103,11 @@ int main(void) {
 
 		Lval t = runast(a);
 
-		printval(t);
+		char foo[2048];
+		valtostr(t, foo);
+		printf("%s\n", foo);
 
-		printf("Ast: "); printast(a);
+		printf("Ast: "); printast(a); putchar('\n');
 
 		free(buf);
 	}
