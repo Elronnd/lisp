@@ -110,9 +110,14 @@ Lval builtin_mul(Lval *vals, size_t numvals) {
 
 
 Lval builtin_intdiv(Lval *vals, size_t numvals) {
-	Lval tmp = {.type = LTYPE_INT, .integer = 1};
+	Lval tmp = {.type = LTYPE_INT, .integer = vals[0].integer};
 
-	for (size_t i = 0; i < numvals; i++) {
+	if (numvals == 1) {
+		tmp.integer = 1 / tmp.integer;
+		return tmp;
+	}
+
+	for (size_t i = 1; i < numvals; i++) {
 		tmp.integer /= vals[i].integer;
 	}
 
@@ -120,9 +125,14 @@ Lval builtin_intdiv(Lval *vals, size_t numvals) {
 }
 
 Lval builtin_floatdiv(Lval *vals, size_t numvals) {
-	Lval tmp = {.type = LTYPE_FLOAT, .lfloat = 1.0};
+	Lval tmp = {.type = LTYPE_FLOAT, .lfloat = (vals[0].type == LTYPE_FLOAT) ? vals[0].lfloat : vals[0].integer};
 
-	for (size_t i = 0; i < numvals; i++) {
+	if (numvals == 1) {
+		tmp.lfloat = 1.0 / tmp.lfloat;
+		return tmp;
+	}
+
+	for (size_t i = 1; i < numvals; i++) {
 		tmp.lfloat /= (vals[i].type == LTYPE_FLOAT) ? vals[i].lfloat : vals[i].integer;
 	}
 

@@ -54,7 +54,7 @@ struct Ast {
 typedef struct {
 	const char *name;
 	Lval (*func)(Lval *vals, size_t numvals);
-	Ltype validtypes[2];
+	Ltype validtypes[4];
 } function;
 
 
@@ -78,6 +78,7 @@ static function builtins[] = {
         {"*", builtin_mul, {LTYPE_INT, LTYPE_FLOAT}},
         {"/", builtin_div, {LTYPE_INT, LTYPE_FLOAT}},
 	{"~", builtin_concat, {LTYPE_STR}},
+	{"=", builtin_cmp, {LTYPE_INT, LTYPE_FLOAT, LTYPE_BOOL, LTYPE_STR}}
 };
 
 
