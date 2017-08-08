@@ -125,6 +125,7 @@ Ast strtoast(char *str, size_t *index) {
 
 precheck:
 	if (str[*index] == ')') {
+		(*index)++;
 		return tmp;
 	} else if (str[*index] == '(') {
 		tmp.childs = realloc(tmp.childs, (++tmp.numchilds) * sizeof(Ast));
@@ -144,9 +145,8 @@ precheck:
 
 int main(void) {
 	size_t foo = 0;
-	Ast a = strtoast("(foo bar baz biz booze fooze)", &foo);
+	Ast a = strtoast("(foo bar (baz (biz booze) biz (bor fooze (flooze))) booze fooze)", &foo);
 	printast(a);
-//	printf("%s", a.childs[4].val);
 }
 
 /*
