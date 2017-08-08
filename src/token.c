@@ -23,6 +23,9 @@ Ast tokenize(const char *str, lint *index) {
 			if (!str[*index]) \
 				error("Unexpected end of code"); \
 \
+			if ((str[*index] == '\\') && (str[(*index) + 1] == '"')) \
+				(*index)++; \
+\
 			dest = realloc(dest, ++len); \
 			dest[len-2] = str[(*index)++]; \
 \
