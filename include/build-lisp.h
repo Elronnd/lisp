@@ -78,7 +78,7 @@ static function builtins[] = {
         {"*", builtin_mul, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
         {"/", builtin_div, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
 	{"~", builtin_concat, .minargs = 1, .maxargs = -1, {LTYPE_STR}},
-//	{"=", builtin_cmp, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT, LTYPE_BOOL, LTYPE_STR}}
+	{"=", builtin_cmp, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT, LTYPE_BOOL, LTYPE_STR}}
 };
 
 

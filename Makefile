@@ -7,7 +7,7 @@ CFLAGS-normal = -g -O2
 CFLAGS-release = -g0 -O3
 
 CFLAGS = $(CFLAGS-base) $(CFLAGS-debug)
-LDFLAGS = -ledit
+LDFLAGS = -ledit -lm
 
 
 OBJ = src/main.o src/builtin.o src/util.o src/token.o src/parse.o
