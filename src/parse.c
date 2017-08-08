@@ -87,7 +87,7 @@ static Lval parse_lval(Lval val) {
 void valtostr(Lval val, char bufout[2048]) {
 	switch (val.type) {
 		case LTYPE_INT: sprintf(bufout, "%lld", val.integer); break;
-		case LTYPE_STR: sprintf(bufout, "%s", val.str); break;
+		case LTYPE_STR: sprintf(bufout, "\"%s\"", val.str); break;
 		case LTYPE_FLOAT: sprintf(bufout, "%Lf", val.lfloat); break;
 		case LTYPE_BOOL: strcpy(bufout, val.boolean ? "true" : "false"); break;
 		default: printf("Unknown.");
