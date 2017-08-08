@@ -1,4 +1,4 @@
-CC = gcc
+CC = clang
 
 CFLAGS-base = -Iinclude -Wall -Wextra -pedantic -std=c11
 

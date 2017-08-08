@@ -36,7 +36,7 @@
 
 void printast(Ast ast) {
 	if (ast.isval) {
-		printf("%s", ast.val);
+		printf("%s", ast.val.undecided);
 	} else {
 		printf("(%s ", ast.op);
 		for (size_t i = 0; i < ast.numchilds; i++) {
@@ -80,9 +80,9 @@ Lval parseast(Ast ast) {
 
 int main(void) {
 	char *buf;
+	size_t foo = 0;
 
 	while (true) {
-		size_t foo = 0;
 		buf = readline("repl> ");
 
 		if (buf == NULL) {
@@ -95,11 +95,14 @@ int main(void) {
 		if (!strcmp(buf, "quit"))
 			break;
 
-		Lval t = parseast(tokenize(buf, &foo));
+		foo = 0;
+		Ast a = tokenize(buf, &foo);
 
-		printf("%lld", t.integer);
-		
-		putchar('\n');
+		Lval t = parseast(a);
+
+		printf("%lld\n", t.integer);
+
+		printf("Ast: "); printast(a);
 
 		free(buf);
 	}

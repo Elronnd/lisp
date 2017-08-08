@@ -15,15 +15,24 @@ Ast tokenize(const char *str, size_t *index) {
 #define slurpstr(dest) do { \
 		size_t len = 1; \
 		dest = calloc(1, len); \
+		bool inquotes = false; \
+		if (str[*index] == '"') \
+			inquotes = true; \
 \
-		while (!isspace(str[*index]) && (str[*index] != ')') && (str[*index] != '(')) { \
+		while (inquotes || (!isspace(str[*index]) && (str[*index] != ')') && (str[*index] != '('))) { \
 			if (!str[*index]) \
 				error("Unexpected end of code"); \
 \
 			dest = realloc(dest, ++len); \
 			dest[len-2] = str[(*index)++]; \
-			dest[len-1] = 0; \
+\
+			if (inquotes && (str[*index] == '"')) { \
+				dest = realloc(dest, ++len); \
+				dest[len-2] = str[(*index)++]; \
+				break; \
+			} \
 		} \
+		dest[len-1] = '\0'; \
 	} while (0);
 
 
