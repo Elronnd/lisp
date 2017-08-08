@@ -52,12 +52,12 @@ static Lval parse_lval(Lval val) {
 	if (val.type == LTYPE_UNDECIDED) {
 		if (val.undecided[0] == '"') {
 			tmp.type = LTYPE_STR;
-			tmp.str = malloc(strlen(val.str));
+			tmp.str = malloc(strlen(val.undecided));
 
-			val.str[strlen(val.str)-1] = '\0';
+			val.undecided[strlen(val.undecided)-1] = '\0';
 			// +1 to get rid of the "
-			strcpy(tmp.str, val.str + 1);
-			free(val.str);
+			strcpy(tmp.str, val.undecided + 1);
+			free(val.undecided);
 
 			return tmp;
 		} else if ((val.undecided[0] == '#') && (strlen(val.undecided) == 2) && (val.undecided[1] == 'f' || val.undecided[1] == 't')) {
