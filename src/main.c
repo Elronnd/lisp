@@ -127,11 +127,11 @@ precheck:
 	if (str[*index] == ')') {
 		return tmp;
 	} else if (str[*index] == '(') {
-		tmp.childs = realloc(tmp.childs, ++tmp.numchilds);
+		tmp.childs = realloc(tmp.childs, (++tmp.numchilds) * sizeof(Ast));
 		tmp.childs[tmp.numchilds-1] = strtoast(str, index);
 		goto precheck;
 	} else {
-		tmp.childs = realloc(tmp.childs, ++tmp.numchilds);
+		tmp.childs = realloc(tmp.childs, (++tmp.numchilds) * sizeof(Ast));
 		tmp.childs[tmp.numchilds-1].isval = true;
 		slurpstr(tmp.childs[tmp.numchilds-1].val);
 		munch_whitespace;
