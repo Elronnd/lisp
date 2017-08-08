@@ -68,7 +68,7 @@ Lval callfunc(const char *name, Lval *in, size_t numasts) {
 	size_t j;
 
 	for (size_t i = 0; i < sizeof(builtins); i++) {
-		if (!strcmp(name, builtins[i].name) && isin(in[i].type, builtins[i].validtypes, 2)) {
+		if (!strcmp(name, builtins[i].name)) {
 			for (j = 0; j < numasts; j++) {
 				if (!isin(in[j].type, builtins[i].validtypes, SIZE(builtins[i].validtypes))) {
 					goto postfor;
@@ -77,6 +77,8 @@ Lval callfunc(const char *name, Lval *in, size_t numasts) {
 
 			return builtins[i].func(in, numasts);
 		}
+
+		continue;
 postfor:
 		error("Unexpected type %d, for function %s.", in[j].type, name);
 	}
