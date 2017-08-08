@@ -4,7 +4,7 @@
 #include <ctype.h>
 
 
-Ast tokenize(const char *str, size_t *index) {
+Ast tokenize(const char *str, lint *index) {
 #define munch_whitespace \
 	while (isspace(str[*index])) { \
 		(*index)++; \
@@ -13,7 +13,7 @@ Ast tokenize(const char *str, size_t *index) {
 	} \
 
 #define slurpstr(dest) do { \
-		size_t len = 1; \
+		lint len = 1; \
 		dest = calloc(1, len); \
 		bool inquotes = false; \
 		if (str[*index] == '"') \

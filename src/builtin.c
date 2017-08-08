@@ -4,20 +4,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-Lval builtin_intadd(Lval *vals, size_t numvals) {
+Lval builtin_intadd(Lval *vals, lint numvals) {
 	Lval tmp = {.type = LTYPE_INT, .integer = 0};
 
-	for (size_t i = 0; i < numvals; i++) {
+	for (lint i = 0; i < numvals; i++) {
 		tmp.integer += vals[i].integer;
 	}
 
 	return tmp;
 }
 
-Lval builtin_floatadd(Lval *vals, size_t numvals) {
+Lval builtin_floatadd(Lval *vals, lint numvals) {
 	Lval tmp = {.type = LTYPE_FLOAT, .lfloat = 0.0};
 
-	for (size_t i = 0; i < numvals; i++) {
+	for (lint i = 0; i < numvals; i++) {
 		tmp.lfloat += (vals[i].type == LTYPE_FLOAT) ? vals[i].lfloat : vals[i].integer;
 	}
 
@@ -25,11 +25,11 @@ Lval builtin_floatadd(Lval *vals, size_t numvals) {
 }
 
 
-Lval builtin_add(Lval *vals, size_t numvals) {
+Lval builtin_add(Lval *vals, lint numvals) {
 	if (numvals == 0)
 		error("Required at least one parameter for addition");
 
-	for (size_t i = 0; i < numvals; i++) {
+	for (lint i = 0; i < numvals; i++) {
 		if (vals[i].type == LTYPE_FLOAT)
 			return builtin_floatadd(vals, numvals);
 	}
@@ -37,20 +37,20 @@ Lval builtin_add(Lval *vals, size_t numvals) {
 	return builtin_intadd(vals, numvals);
 }
 
-Lval builtin_intsub(Lval *vals, size_t numvals) {
+Lval builtin_intsub(Lval *vals, lint numvals) {
 	Lval tmp = {.type = LTYPE_INT, .integer = 0};
 
-	for (size_t i = 0; i < numvals; i++) {
+	for (lint i = 0; i < numvals; i++) {
 		tmp.integer -= vals[i].integer;
 	}
 
 	return tmp;
 }
 
-Lval builtin_floatsub(Lval *vals, size_t numvals) {
+Lval builtin_floatsub(Lval *vals, lint numvals) {
 	Lval tmp = {.type = LTYPE_FLOAT, .lfloat = 0.0};
 
-	for (size_t i = 0; i < numvals; i++) {
+	for (lint i = 0; i < numvals; i++) {
 		tmp.lfloat -= (vals[i].type == LTYPE_FLOAT) ? vals[i].lfloat : vals[i].integer;
 	}
 
@@ -59,11 +59,11 @@ Lval builtin_floatsub(Lval *vals, size_t numvals) {
 
 
 
-Lval builtin_sub(Lval *vals, size_t numvals) {
+Lval builtin_sub(Lval *vals, lint numvals) {
 	if (numvals == 0)
 		error("Required at least one parameter for subtraction");
 
-	for (size_t i = 0; i < numvals; i++) {
+	for (lint i = 0; i < numvals; i++) {
 		if (vals[i].type == LTYPE_FLOAT)
 			return builtin_floatsub(vals, numvals);
 	}
@@ -74,20 +74,20 @@ Lval builtin_sub(Lval *vals, size_t numvals) {
 
 
 
-Lval builtin_intmul(Lval *vals, size_t numvals) {
+Lval builtin_intmul(Lval *vals, lint numvals) {
 	Lval tmp = {.type = LTYPE_INT, .integer = 1};
 
-	for (size_t i = 0; i < numvals; i++) {
+	for (lint i = 0; i < numvals; i++) {
 		tmp.integer *= vals[i].integer;
 	}
 
 	return tmp;
 }
 
-Lval builtin_floatmul(Lval *vals, size_t numvals) {
+Lval builtin_floatmul(Lval *vals, lint numvals) {
 	Lval tmp = {.type = LTYPE_FLOAT, .lfloat = 1.0};
 
-	for (size_t i = 0; i < numvals; i++) {
+	for (lint i = 0; i < numvals; i++) {
 		tmp.lfloat *= (vals[i].type == LTYPE_FLOAT) ? vals[i].lfloat : vals[i].integer;
 	}
 
@@ -95,11 +95,11 @@ Lval builtin_floatmul(Lval *vals, size_t numvals) {
 }
 
 
-Lval builtin_mul(Lval *vals, size_t numvals) {
+Lval builtin_mul(Lval *vals, lint numvals) {
 	if (numvals == 0)
 		error("Required at least one parameter for multiplication");
 
-	for (size_t i = 0; i < numvals; i++) {
+	for (lint i = 0; i < numvals; i++) {
 		if (vals[i].type == LTYPE_FLOAT)
 			return builtin_floatmul(vals, numvals);
 	}
@@ -109,30 +109,20 @@ Lval builtin_mul(Lval *vals, size_t numvals) {
 }
 
 
-Lval builtin_intdiv(Lval *vals, size_t numvals) {
+Lval builtin_intdiv(Lval *vals, lint numvals) {
 	Lval tmp = {.type = LTYPE_INT, .integer = vals[0].integer};
 
-	if (numvals == 1) {
-		tmp.integer = 1 / tmp.integer;
-		return tmp;
-	}
-
-	for (size_t i = 1; i < numvals; i++) {
+	for (lint i = 1; i < numvals; i++) {
 		tmp.integer /= vals[i].integer;
 	}
 
 	return tmp;
 }
 
-Lval builtin_floatdiv(Lval *vals, size_t numvals) {
+Lval builtin_floatdiv(Lval *vals, lint numvals) {
 	Lval tmp = {.type = LTYPE_FLOAT, .lfloat = (vals[0].type == LTYPE_FLOAT) ? vals[0].lfloat : vals[0].integer};
 
-	if (numvals == 1) {
-		tmp.lfloat = 1.0 / tmp.lfloat;
-		return tmp;
-	}
-
-	for (size_t i = 1; i < numvals; i++) {
+	for (lint i = 1; i < numvals; i++) {
 		tmp.lfloat /= (vals[i].type == LTYPE_FLOAT) ? vals[i].lfloat : vals[i].integer;
 	}
 
@@ -141,11 +131,11 @@ Lval builtin_floatdiv(Lval *vals, size_t numvals) {
 
 
 
-Lval builtin_div(Lval *vals, size_t numvals) {
+Lval builtin_div(Lval *vals, lint numvals) {
 	if (numvals == 0)
 		error("Required at least one parameter for division");
 
-	for (size_t i = 0; i < numvals; i++) {
+	for (lint i = 0; i < numvals; i++) {
 		if (vals[i].type == LTYPE_FLOAT)
 			return builtin_floatdiv(vals, numvals);
 	}
@@ -154,13 +144,13 @@ Lval builtin_div(Lval *vals, size_t numvals) {
 }
 
 
-Lval builtin_concat(Lval *vals, size_t numvals) {
+Lval builtin_concat(Lval *vals, lint numvals) {
 	if (numvals == 0)
 		error("Required at least one parameter for concatenation");
 
 	Lval tmp = {.type = LTYPE_STR, .str = NULL};
 
-	for (size_t i = 0; i < numvals; i++) {
+	for (lint i = 0; i < numvals; i++) {
 		tmp.str = realloc(tmp.str, strlen(tmp.str) + strlen(vals[i].str) + 1);
 		
 		if (i == 0)

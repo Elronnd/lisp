@@ -1,12 +1,11 @@
 // vim: ft=c
 #include <stdbool.h>
-#include <stddef.h>  // size_t
 
 
 #ifndef BUILDLISP_H
 #define BUILDLISP_H
 
-#define SIZE(x)	(sizeof(x) / sizeof(x[0]))
+#define SIZE(x)	(lint)(sizeof(x) / sizeof(x[0]))
 
 
 typedef enum {
@@ -44,7 +43,7 @@ struct Ast {
 	bool isval;
 
 	struct Ast *childs;
-	size_t numchilds;
+	lint numchilds;
 
 	Lval val;
 
@@ -53,7 +52,8 @@ struct Ast {
 
 typedef struct {
 	const char *name;
-	Lval (*func)(Lval *vals, size_t numvals);
+	Lval (*func)(Lval *vals, lint numvals);
+	lint minargs, maxargs;
 	Ltype validtypes[4];
 } function;
 
@@ -65,32 +65,32 @@ extern void printast(Ast ast);
 
 
 // builtins.c
-extern Lval builtin_add(Lval *vals, size_t numvals);
-extern Lval builtin_sub(Lval *vals, size_t numvals);
-extern Lval builtin_mul(Lval *vals, size_t numvals);
-extern Lval builtin_div(Lval *vals, size_t numvals);
-extern Lval builtin_concat(Lval *vals, size_t numvals);
-extern Lval builtin_cmp(Lval *vals, size_t numvals);
+extern Lval builtin_add(Lval *vals, lint numvals);
+extern Lval builtin_sub(Lval *vals, lint numvals);
+extern Lval builtin_mul(Lval *vals, lint numvals);
+extern Lval builtin_div(Lval *vals, lint numvals);
+extern Lval builtin_concat(Lval *vals, lint numvals);
+extern Lval builtin_cmp(Lval *vals, lint numvals);
 
 static function builtins[] = {
-        {"+", builtin_add, {LTYPE_INT, LTYPE_FLOAT}},
-        {"-", builtin_sub, {LTYPE_INT, LTYPE_FLOAT}},
-        {"*", builtin_mul, {LTYPE_INT, LTYPE_FLOAT}},
-        {"/", builtin_div, {LTYPE_INT, LTYPE_FLOAT}},
-	{"~", builtin_concat, {LTYPE_STR}},
-	{"=", builtin_cmp, {LTYPE_INT, LTYPE_FLOAT, LTYPE_BOOL, LTYPE_STR}}
+        {"+", builtin_add, .minargs = 1, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
+        {"-", builtin_sub, .minargs = 1, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
+        {"*", builtin_mul, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
+        {"/", builtin_div, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
+	{"~", builtin_concat, .minargs = 1, .maxargs = -1, {LTYPE_STR}},
+//	{"=", builtin_cmp, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT, LTYPE_BOOL, LTYPE_STR}}
 };
 
 
 // token.c
-Ast tokenize(const char *str, size_t *index);
+Ast tokenize(const char *str, lint *index);
 
 // parse.c
 void valtostr(Lval val, char bufout[2048]);
 void parseast(Ast *ast);
 
 
-_Noreturn extern void _error(const char *file, size_t line, const char *fmt, ...);
+_Noreturn extern void _error(const char *file, lint line, const char *fmt, ...);
 #define error(...) _error(__FILE__, __LINE__, __VA_ARGS__)
 
 #endif

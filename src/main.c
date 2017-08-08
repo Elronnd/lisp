@@ -41,7 +41,7 @@ void printast(Ast ast) {
 		printf("%s", buf);
 	} else {
 		printf("(%s ", ast.op);
-		for (size_t i = 0; i < ast.numchilds; i++) {
+		for (lint i = 0; i < ast.numchilds; i++) {
 			printast(ast.childs[i]);
 
 			// print a space in between most expressions, but not after
@@ -64,16 +64,21 @@ static bool isin(int needle, int *haystack, int numstack) {
 }
 
 
-Lval callfunc(const char *name, Lval *in, size_t numasts) {
-	size_t j;
+Lval callfunc(const char *name, Lval *in, lint numasts) {
+	lint i, j;
 
-	for (size_t i = 0; i < SIZE(builtins); i++) {
+	for (i = 0; i < SIZE(builtins); i++) {
 		if (!strcmp(name, builtins[i].name)) {
 			for (j = 0; j < numasts; j++) {
-				if (!isin(in[j].type, (int*)builtins[i].validtypes, SIZE(builtins[i].validtypes))) {
-					goto postfor;
-				}
+				if (!isin(in[j].type, (int*)builtins[i].validtypes, SIZE(builtins[i].validtypes)))
+					goto wrongtype;
 			}
+
+			if (((numasts < builtins[i].minargs) && (builtins[i].minargs != -1)) ||
+			    ((numasts > builtins[i].maxargs) && (builtins[i].maxargs != -1))) {
+				goto wrongargs;
+			}
+
 
 			return builtins[i].func(in, numasts);
 		}
@@ -81,8 +86,10 @@ Lval callfunc(const char *name, Lval *in, size_t numasts) {
 
 	error("Unknown function %s", name);
 
-postfor:
+wrongtype:
 	error("Unexpected type %d, for function %s.", in[j].type, name);
+wrongargs:
+	error("Got %d args when the expected range was %d to %d", numasts, builtins[i].minargs, builtins[i].maxargs);
 }
 
 
@@ -92,7 +99,7 @@ Lval runast(Ast ast) {
 	} else {
 		Lval *vals = malloc(sizeof(Lval) * ast.numchilds);
 
-		for (size_t i = 0; i < ast.numchilds; i++) {
+		for (lint i = 0; i < ast.numchilds; i++) {
 			vals[i] = runast(ast.childs[i]);
 		}
 
@@ -105,7 +112,7 @@ Lval runast(Ast ast) {
 
 int main(void) {
 	char *buf;
-	size_t foo = 0;
+	lint foo = 0;
 
 	while (true) {
 		buf = readline("repl> ");

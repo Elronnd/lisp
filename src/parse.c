@@ -90,7 +90,7 @@ void parseast(Ast *ast) {
 	if (ast->isval) {
 		ast->val = parse_lval(ast->val);
 	} else {
-		for (size_t i = 0; i < ast->numchilds; i++) {
+		for (lint i = 0; i < ast->numchilds; i++) {
 			parseast(&(ast->childs[i]));
 		}
 	}
