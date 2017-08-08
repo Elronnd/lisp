@@ -1,9 +1,17 @@
 #include "build-lisp.h"
 
 #include <stddef.h>
+#include <stdlib.h>
 
 const char *valtostr(Lval val) {
 	return "Undone";
+}
+
+Lval getundecided(Lval val) {
+	Lval tmp = {.type = LTYPE_INT};
+	tmp.integer = atoll(val.undecided);
+
+	return tmp;
 }
 
 Lval builtin_intadd(Lval *vals, size_t numvals) {
@@ -27,11 +35,14 @@ Lval builtin_floatadd(Lval *vals, size_t numvals) {
 }
 
 
-
-
 Lval builtin_add(Lval *vals, size_t numvals) {
 	if (numvals == 0)
 		error("Required at least one parameter for addition");
+
+	for (size_t i = 0; i < numvals; i++) {
+		if (vals[i].type == LTYPE_UNDECIDED)
+			vals[i] = getundecided(vals[i]);
+	}
 
 	Ltype tmp = vals[0].type;
 	if ((tmp != LTYPE_INT) && (tmp != LTYPE_FLOAT))

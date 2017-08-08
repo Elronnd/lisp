@@ -95,7 +95,9 @@ int main(void) {
 		if (!strcmp(buf, "quit"))
 			break;
 
-		parseast(tokenize(buf, &foo));
+		Lval t = parseast(tokenize(buf, &foo));
+
+		printf("%lld", t.integer);
 		
 		putchar('\n');
 
