@@ -99,7 +99,10 @@ int main(void) {
 
 		foo = 0;
 		Ast a = tokenize(buf, &foo);
+
 		parseast(&a);
+
+		printf("Ast: "); printast(a); putchar('\n');
 
 		Lval t = runast(a);
 
@@ -107,7 +110,6 @@ int main(void) {
 		valtostr(t, foo);
 		printf("%s\n", foo);
 
-		printf("Ast: "); printast(a); putchar('\n');
 
 		free(buf);
 	}

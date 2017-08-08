@@ -1,6 +1,7 @@
 #include "build-lisp.h"
 
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 #include <stdio.h>
 
@@ -50,9 +51,15 @@ static Lval parse_lval(Lval val) {
 
 	if (val.type == LTYPE_UNDECIDED) {
 		if (val.undecided[0] == '"') {
-			val.type = LTYPE_STR;
-			val.str = val.undecided;
-			return val;
+			tmp.type = LTYPE_STR;
+			tmp.str = malloc(strlen(val.str));
+
+			val.str[strlen(val.str)-1] = '\0';
+			// +1 to get rid of the "
+			strcpy(tmp.str, val.str + 1);
+			free(val.str);
+
+			return tmp;
 		} else if (couldbeint(val.undecided, &tmp.integer)) {
 			tmp.type = LTYPE_INT;
 			return tmp;
