@@ -58,6 +58,7 @@ Ast tokenize(const char *str, lint *index) {
 precheck:
 	if (str[*index] == ')') {
 		(*index)++;
+		munch_whitespace;
 		return tmp;
 	} else if (str[*index] == '(') {
 		tmp.childs = realloc(tmp.childs, (++tmp.numchilds) * sizeof(Ast));
