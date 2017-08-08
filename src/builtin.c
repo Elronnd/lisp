@@ -110,10 +110,13 @@ Lval builtin_strcat(Lval *vals, lint numvals) {
 	Lval tmp = {.type = LTYPE_STR, .str = NULL};
 
 	for (lint i = 0; i < numvals; i++) {
-		tmp.str = realloc(tmp.str, strlen(tmp.str) + strlen(vals[i].str) + 1);
-		
-		if (i == 0)
+		if (i == 0) {
+			tmp.str = malloc(strlen(vals[0].str) + 1);
 			tmp.str[0] = '\0';
+		} else {
+			tmp.str = realloc(tmp.str, strlen(tmp.str) + strlen(vals[i].str) + 1);
+		}
+
 
 		strcat(tmp.str, vals[i].str);
 	}
