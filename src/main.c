@@ -145,46 +145,9 @@ precheck:
 
 int main(void) {
 	size_t foo = 0;
-	Ast a = strtoast("(foo bar (baz (biz booze) biz (bor fooze (flooze))) booze fooze)", &foo);
-	printast(a);
-}
-
-/*
-int main(void) {
-	Ast ast;
-
-	ast.isval = false;
-	ast.op = "+";
-	ast.childs = malloc(sizeof(ast) * 2);
-	ast.numchilds = 2;
-
-	ast.childs[0].isval = true;
-	ast.childs[0].val = 3;
-
-	ast.childs[1].isval = false;
-	ast.childs[1].op = "*";
-	ast.childs[1].childs = malloc(sizeof(ast) * 2);
-	ast.childs[1].numchilds = 2;
-
-	ast.childs[1].childs[0].isval = true;
-	ast.childs[1].childs[0].val = 5;
-	ast.childs[1].childs[1].isval = true;
-	ast.childs[1].childs[1].val = 7;
-
-	printf("Values is %ld\n", parseast(ast));
-
-	printf("Formatted: ");
-	printast(ast);
-	putchar('\n');
-}
-*/
-
-#if 0
-int main(void) {
-	bool done = false;
 	char *buf;
 
-	while (!done) {
+	while (true) {
 		buf = readline("repl> ");
 
 		if (buf == NULL) {
@@ -195,13 +158,13 @@ int main(void) {
 		add_history(buf);
 
 		if (!strcmp(buf, "quit"))
-			done = true;
+			break;
 
-		printf("You said %s!\n", buf);
+		printast(strtoast(buf, &foo));
+		putchar('\n');
 
 		free(buf);
 	}
 
 	return 0;
 }
-#endif
