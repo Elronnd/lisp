@@ -79,10 +79,10 @@ Lval parseast(Ast ast) {
 
 
 int main(void) {
-	size_t foo = 0;
 	char *buf;
 
 	while (true) {
+		size_t foo = 0;
 		buf = readline("repl> ");
 
 		if (buf == NULL) {
