@@ -64,7 +64,7 @@ static bool isin(int needle, int *haystack, int numstack) {
 }
 
 
-Lval callfunc(const char *name, Lval *in, lint numasts, bool runtime) {
+Lval callfunc(char *name, Lval *in, lint numasts, bool runtime) {
 	lint i, j;
 
 	for (i = 0; i < SIZE(builtins); i++) {
