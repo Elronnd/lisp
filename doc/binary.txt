@@ -1,0 +1,65 @@
+A binary format for S-expression-based languages.
+
+Abstract: fuck this it's not that complicated and fucking stupid and pretentious too.  How about I just write up what the format looks like.
+
+
+
+
+
+Endianness: big-endian.  If the system is different, you'll have to convert it.
+
+Magic number: 0xdecaffad.  Followed by one byte of major version, and one of minor version.  The next byte should be 0 if an extended-precision intel 80-bit floating point was available when this file was compiled, and >0 if only a 64-bit floating point was available (e.g. on arm).  This version is v0.1, major version 0, minor version 1.  Patchlevel is not included.
+Ending magic number: 0xdefeca7e
+
+At any given time, read one byte at a time unless instructed otherwise.
+
+We have two data structures at the moment: Asts and Lvals.  Asts can contains both Asts and Lvals; and Lvals can contain Asts.  Any program will start with an Ast, so I'll show that one first.
+
+AST
+Any valid Ast must start with 0x01 and end in 0x02.  So *technically* the magic number is 0xdecaffad01.  But don't worry about it.  After the Ast declaration comes an unsigned byte which decides if it's a value or not.  If the next byte is >0, then this Ast is a value.  If it's 0, then it's an expression.  In order to keep maximum compatability, however, compilers should set this to either 0x01 or 0x00.
+
+  EXPRESSION
+    An expression consists of 3 parts: a string, for the operator, a number, which is the number of childs Asts there are, and then the child Asts themselves.  A string consists of a length (8 unsigned bytes, which corresponds to size_t on a 64-bit system), followed by the string itself, followed by a NUL (0x00) terminator.  The length includes the null terminator.  The number is also 8 unsigned bytes.  It may be zero.  Thus, the shortest binary-valid program is this:
+
+0xdecaffad // magic number
+0x01 // Ast initializer
+0x00 // it's NOT a value: it must be an expression
+
+0x0000000000000004 // 4 digits in "nop (NUL)"
+0x6e 0x6f 0x70 0x00 // 'n' 'o' 'p' NUL
+0x0000000000000000 // zero child asts
+
+0x02 // Ast terminator
+0xdefeca7e // magic terminator
+
+  VAL
+    if this Ast corresponds to a value then just insert according to the value specification below:
+
+
+VALUE
+  Any valid value must start with 0x03 and end with 0x04.  The type (one byte) follows.  The type can be any one of the following:
+   * Undecided: string, 1
+   * Integer: int64_t, 2
+   * Floating point: long double (80-bit intel floating point taking up 128 bits, only present if specified as available in header), concatenated to double (64-bit floating point), 3.  On systems where an extended-precision float is available, that one should be used
+   * String: string, 4
+   * Boolean: bool (1 byte should be read), 5
+   * Raw: void*, 6.  Do not implement this it is unfinished
+   * Variable: char*, 7.  Do not implement this either
+   * Ast: Ast, 8
+   * Void: unrepresented, 9.  If the type is a void, then the value terminator should follow.
+
+  There is an LTYPE_ANY in the source code, but this is an implementation detail that is used only in builtin functions.  Several valid Values follow:
+
+0x03 // initializer
+0x04 // string
+0x0000000000000005 // length
+0x62 0x6c 0x61 0x68 0x00 // 'b' 'l' 'a' 'h' NUL
+0x04 // terminator
+
+Another:
+
+0x03 // initializer
+0x03 // floating point
+0xaa7ef9db22d0e5604001 // 80-bit representation
+0x40154fdf3b645a1d // 64-bit representation
+0x04 // terminator
