@@ -30,15 +30,22 @@ Lval builtin_if(Lval *vals, lint numvals) {
 		error("Type %d cannot be coerced to a boolean", vals[0].type);
 
 	bool foo = (vals[0].type == LTYPE_BOOL) ? vals[0].boolean : vals[0].integer;
+	Lval ret;
 
 	if (foo) {
-		return vals[1];
+		ret = vals[1];
 	} else {
 		if (numvals == 1) {
-			Lval out = {.type = LTYPE_VOID};
-			return out;
+			ret.type = LTYPE_VOID;
 		} else {
-			return vals[2];
+			ret = vals[2];
 		}
 	}
+
+	if (ret.type == LTYPE_AST) {
+		return runast(*ret.ast, true);
+	} else {
+		return ret;
+	}
+
 }

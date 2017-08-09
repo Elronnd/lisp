@@ -64,7 +64,7 @@ static bool isin(int needle, int *haystack, int numstack) {
 }
 
 
-Lval callfunc(const char *name, Lval *in, lint numasts) {
+Lval callfunc(const char *name, Lval *in, lint numasts, bool runtime) {
 	lint i, j;
 
 	for (i = 0; i < SIZE(builtins); i++) {
@@ -81,7 +81,23 @@ Lval callfunc(const char *name, Lval *in, lint numasts) {
 			}
 
 
-			return builtins[i].func(in, numasts);
+			if (runtime || builtins[i].ispure) {
+				return builtins[i].func(in, numasts);
+			} else {
+				Lval ret = {.type = LTYPE_AST};
+
+				Ast ast = {.isval = false, .op = name, .numchilds = numasts, .childs = malloc(sizeof(Ast) * numasts)};
+
+				for (lint i = 0; i < numasts; i++) {
+					ast.childs[i].isval = true;
+					ast.childs[i].val = in[i];
+				}
+
+				ret.ast = &ast;
+
+				return ret;
+			}
+
 continueout:
 			continue;
 		}
@@ -94,17 +110,17 @@ wrongargs:
 }
 
 
-Lval runast(Ast ast) {
+Lval runast(Ast ast, bool runtime) {
 	if (ast.isval) {
 		return ast.val;
 	} else {
 		Lval *vals = malloc(sizeof(Lval) * ast.numchilds);
 
 		for (lint i = 0; i < ast.numchilds; i++) {
-			vals[i] = runast(ast.childs[i]);
+			vals[i] = runast(ast.childs[i], runtime);
 		}
 
-		return callfunc(ast.op, vals, ast.numchilds);
+		return callfunc(ast.op, vals, ast.numchilds, runtime);
 	}
 }
 
@@ -135,7 +151,7 @@ int main(void) {
 
 		printf("Ast: "); printast(a); putchar('\n');
 
-		Lval t = runast(a);
+		Lval t = runast(a, false);
 
 		char foo[2048];
 		valtostr(t, foo);
