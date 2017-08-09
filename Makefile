@@ -16,4 +16,4 @@ default: $(OBJ)
 	$(CC) $(LDFLAGS) -o lisp $(OBJ)
 
 clean:
-	rm src/*.o lisp
+	rm src/*.o src/builtins/*.o lisp

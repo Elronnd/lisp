@@ -89,6 +89,14 @@ extern Lval builtin_strcmp(Lval *vals, lint numvals);
 
 extern Lval builtin_if(Lval *vals, lint numvals);
 
+extern Lval builtin_intsqrt(Lval *vals, lint numvals);
+extern Lval builtin_floatsqrt(Lval *vals, lint numvals);
+
+extern Lval builtin_intlt(Lval *vals, lint numvals);
+extern Lval builtin_floatlt(Lval *vals, lint numvals);
+extern Lval builtin_intgt(Lval *vals, lint numvals);
+extern Lval builtin_floatgt(Lval *vals, lint numvals);
+
 static function builtins[] = {
         {"+", builtin_intadd, .minargs = 1, .maxargs = -1, {LTYPE_INT}},
         {"+", builtin_floatadd, .minargs = 1, .maxargs = -1, {LTYPE_FLOAT, LTYPE_INT}},
@@ -109,7 +117,15 @@ static function builtins[] = {
 	{"=", builtin_boolcmp, .minargs = 2, .maxargs = -1, {LTYPE_BOOL}},
 	{"=", builtin_strcmp, .minargs = 2, .maxargs = -1, {LTYPE_STR}},
 
-	{"if", builtin_if, .minargs = 2, .maxargs = 3, {LTYPE_ANY}}
+	{"if", builtin_if, .minargs = 2, .maxargs = 3, {LTYPE_ANY}},
+
+	{"sqrt", builtin_intsqrt, .minargs = 1, .maxargs = 1, {LTYPE_INT}},
+	{"sqrt", builtin_floatsqrt, .minargs = 1, .maxargs = 1, {LTYPE_FLOAT}},
+
+	{"<", builtin_intlt, .minargs = 2, .maxargs = -1, {LTYPE_INT}},
+	{"<", builtin_floatlt, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
+	{">", builtin_intgt, .minargs = 2, .maxargs = -1, {LTYPE_INT}},
+	{">", builtin_floatgt, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
 };
 
 

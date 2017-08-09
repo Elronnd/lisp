@@ -1,5 +1,7 @@
 #include "build-lisp.h"
 
+#include <math.h>
+
 Lval builtin_intadd(Lval *vals, lint numvals) {
 	Lval tmp = {.type = LTYPE_INT, .integer = 0};
 
@@ -97,3 +99,23 @@ Lval builtin_floatdiv(Lval *vals, lint numvals) {
 	return tmp;
 }
 
+
+Lval builtin_floatsqrt(Lval *vals, lint numvals) {
+	(void) numvals; // so the compiler doesn't complain
+
+	Lval tmp = {.type = LTYPE_FLOAT};
+
+	tmp.lfloat = sqrtl(vals[0].lfloat);
+
+	return tmp;
+}
+
+Lval builtin_intsqrt(Lval *vals, lint numvals) {
+	(void) numvals;
+
+	Lval tmp = {.type = LTYPE_INT};
+
+	tmp.integer = sqrtl(vals[0].integer);
+
+	return tmp;
+}

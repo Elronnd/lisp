@@ -57,4 +57,57 @@ Lval builtin_boolcmp(Lval *vals, lint numvals) {
 	return ret;
 }
 
+Lval builtin_intlt(Lval *vals, lint numvals) {
+	Lval ret = {.type = LTYPE_BOOL, .boolean = false};
+
+	for (lint i = 1; i < numvals; i++) {
+		if (vals[i].integer <= vals[i-1].integer) {
+			return ret;
+		}
+	}
+
+	ret.boolean = true;
+	return ret;
+}
+
+
+Lval builtin_floatlt(Lval *vals, lint numvals) {
+	Lval ret = {.type = LTYPE_BOOL, .boolean = false};
+
+	for (lint i = 1; i < numvals; i++) {
+		if ((vals[i].type == LTYPE_FLOAT ? vals[i].lfloat : vals[i].integer) <= (vals[i-1].type == LTYPE_FLOAT ? vals[i-1].lfloat : vals[i-1].integer)) {
+			return ret;
+		}
+	}
+
+	ret.boolean = true;
+	return ret;
+}
+
+
+Lval builtin_intgt(Lval *vals, lint numvals) {
+	Lval ret = {.type = LTYPE_BOOL, .boolean = false};
+
+	for (lint i = 1; i < numvals; i++) {
+		if (vals[i].integer >= vals[i-1].integer) {
+			return ret;
+		}
+	}
+
+	ret.boolean = true;
+	return ret;
+}
+
+Lval builtin_floatgt(Lval *vals, lint numvals) {
+	Lval ret = {.type = LTYPE_BOOL, .boolean = false};
+
+	for (lint i = 1; i < numvals; i++) {
+		if ((vals[i].type == LTYPE_FLOAT ? vals[i].lfloat : vals[i].integer) >= (vals[i-1].type == LTYPE_FLOAT ? vals[i-1].lfloat : vals[i-1].integer)) {
+			return ret;
+		}
+	}
+
+	ret.boolean = true;
+	return ret;
+}
 
