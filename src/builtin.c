@@ -150,6 +150,7 @@ Lval builtin_strcmp(Lval *vals, lint numvals) {
 	ret.boolean = true;
 	return ret;
 }
+
 Lval builtin_intcmp(Lval *vals, lint numvals) {
 	Lval ret = {.type = LTYPE_BOOL, .boolean = false};
 
@@ -162,6 +163,7 @@ Lval builtin_intcmp(Lval *vals, lint numvals) {
 	ret.boolean = true;
 	return ret;
 }
+
 Lval builtin_boolcmp(Lval *vals, lint numvals) {
 	Lval ret = {.type = LTYPE_BOOL, .boolean = false};
 
@@ -173,4 +175,22 @@ Lval builtin_boolcmp(Lval *vals, lint numvals) {
 
 	ret.boolean = true;
 	return ret;
+}
+
+Lval builtin_if(Lval *vals, lint numvals) {
+	if ((vals[0].type != LTYPE_BOOL) && (vals[0].type != LTYPE_INT))
+		error("Type %d cannot be coerced to a boolean", vals[0].type);
+
+	bool foo = (vals[0].type == LTYPE_BOOL) ? vals[0].boolean : vals[0].integer;
+
+	if (foo) {
+		return vals[1];
+	} else {
+		if (numvals == 1) {
+			Lval out = {.type = LTYPE_VOID};
+			return out;
+		} else {
+			return vals[2];
+		}
+	}
 }

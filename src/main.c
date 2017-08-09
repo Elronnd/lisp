@@ -70,7 +70,8 @@ Lval callfunc(const char *name, Lval *in, lint numasts) {
 	for (i = 0; i < SIZE(builtins); i++) {
 		if (!strcmp(name, builtins[i].name)) {
 			for (j = 0; j < numasts; j++) {
-				if (!isin(in[j].type, (int*)builtins[i].validtypes, SIZE(builtins[i].validtypes)))
+				if (!isin(in[j].type, (int*)builtins[i].validtypes, SIZE(builtins[i].validtypes)) &&
+				    !isin(LTYPE_ANY, (int*)builtins[i].validtypes, SIZE(builtins[i].validtypes)))
 					goto continueout;
 			}
 

@@ -11,13 +11,15 @@
 typedef enum {
 	LTYPE_UNDECIDED = 1, // char*.  We have lazy parsing, which can be good, or bad, just like python.
 			// Good for performance, but bad if something like this happens: (if true (+ 5 7) (- 5 "asdf")).  That's not an error
-	LTYPE_INT,   // long long
-	LTYPE_FLOAT, // long double
-	LTYPE_STR,   // char*
-	LTYPE_BOOL,  // bool
-	LTYPE_RAW,   // void*
+	LTYPE_INT,      // long long
+	LTYPE_FLOAT,    // long double
+	LTYPE_STR,      // char*
+	LTYPE_BOOL,     // bool
+	LTYPE_RAW,      // void*
 	LTYPE_VARIABLE, // char*
-	LTYPE_AST    // Ast
+	LTYPE_AST,      // Ast
+	LTYPE_VOID,     // none
+	LTYPE_ANY,      // none
 } Ltype;
 
 typedef struct Ast Ast;
@@ -85,6 +87,7 @@ extern Lval builtin_floatcmp(Lval *vals, lint numvals);
 extern Lval builtin_boolcmp(Lval *vals, lint numvals);
 extern Lval builtin_strcmp(Lval *vals, lint numvals);
 
+extern Lval builtin_if(Lval *vals, lint numvals);
 
 static function builtins[] = {
         {"+", builtin_intadd, .minargs = 1, .maxargs = -1, {LTYPE_INT}},
@@ -104,7 +107,9 @@ static function builtins[] = {
 	{"=", builtin_intcmp, .minargs = 2, .maxargs = -1, {LTYPE_INT}},
 	{"=", builtin_floatcmp, .minargs = 2, .maxargs = -1, {LTYPE_FLOAT, LTYPE_INT}},
 	{"=", builtin_boolcmp, .minargs = 2, .maxargs = -1, {LTYPE_BOOL}},
-	{"=", builtin_strcmp, .minargs = 2, .maxargs = -1, {LTYPE_STR}}
+	{"=", builtin_strcmp, .minargs = 2, .maxargs = -1, {LTYPE_STR}},
+
+	{"if", builtin_if, .minargs = 2, .maxargs = 3, {LTYPE_ANY}}
 };
 
 
