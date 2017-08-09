@@ -6,7 +6,7 @@ Abstract: fuck this it's not that complicated and fucking stupid and pretentious
 
 
 
-Endianness: big-endian.  If the system is different, you'll have to convert it.
+Endianness: little-endian.  If the system is different you'll have to convert it.  The reason for this is that most modern computers are little-endian, which means that if we do it this way there will be less conversion which will speed up file loading.
 
 Magic number: 0xdecaffad.  Followed by one byte of major version, and one of minor version.  The next byte should be 0 if an extended-precision intel 80-bit floating point was available when this file was compiled, and >0 if only a 64-bit floating point was available (e.g. on arm).  This version is v0.1, major version 0, minor version 1.  Patchlevel is not included.
 Ending magic number: 0xdefeca7e
