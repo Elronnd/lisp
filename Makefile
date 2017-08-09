@@ -10,7 +10,7 @@ CFLAGS = $(CFLAGS-base) $(CFLAGS-debug)
 LDFLAGS = -ledit -lm
 
 
-OBJ = src/main.o src/util.o src/token.o src/parse.o src/builtins/builtinarith.o src/builtins/builtincmp.o src/builtins/builtin.o
+OBJ = src/main.o src/util.o src/token.o src/parse.o src/builtins/builtinarith.o src/builtins/builtincmp.o src/builtins/builtin.o src/builtins/builtinio.o
 
 default: $(OBJ)
 	$(CC) $(LDFLAGS) -o lisp $(OBJ)

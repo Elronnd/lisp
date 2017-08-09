@@ -97,6 +97,8 @@ extern Lval builtin_floatlt(Lval *vals, lint numvals);
 extern Lval builtin_intgt(Lval *vals, lint numvals);
 extern Lval builtin_floatgt(Lval *vals, lint numvals);
 
+extern Lval builtin_readchar(Lval *vals, lint numvals);
+
 static function builtins[] = {
         {"+", builtin_intadd, .minargs = 1, .maxargs = -1, {LTYPE_INT}},
         {"+", builtin_floatadd, .minargs = 1, .maxargs = -1, {LTYPE_FLOAT, LTYPE_INT}},
@@ -126,6 +128,8 @@ static function builtins[] = {
 	{"<", builtin_floatlt, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
 	{">", builtin_intgt, .minargs = 2, .maxargs = -1, {LTYPE_INT}},
 	{">", builtin_floatgt, .minargs = 2, .maxargs = -1, {LTYPE_INT, LTYPE_FLOAT}},
+
+	{"readchar", builtin_readchar, .minargs = 0, .maxargs = 0},
 };
 
 
