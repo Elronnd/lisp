@@ -1,5 +1,6 @@
 // vim: ft=c
 #include <stdbool.h>
+#include <stdint.h>
 
 
 #ifndef BUILDLISP_H
@@ -24,7 +25,7 @@ typedef enum {
 
 typedef struct Ast Ast;
 
-typedef signed long long lint;
+typedef int64_t lint;
 typedef long double real;
 
 typedef struct {
@@ -44,12 +45,11 @@ typedef struct {
 struct Ast {
 	bool isval;
 
-	struct Ast *childs;
+	char *op;
 	lint numchilds;
+	struct Ast *childs;
 
 	Lval val;
-
-	char *op;
 };
 
 typedef struct {
