@@ -3,8 +3,8 @@
 #include <stdint.h>
 
 
-#ifndef BUILDLISP_H
-#define BUILDLISP_H
+#ifndef CORAL_H
+#define CORAL_H
 
 #define SIZE(x)	(lint)(sizeof(x) / sizeof(x[0]))
 
@@ -145,4 +145,4 @@ void parseast(Ast *ast);
 _Noreturn extern void _error(const char *file, lint line, const char *fmt, ...);
 #define error(...) _error(__FILE__, __LINE__, __VA_ARGS__)
 
-#endif
+#endif // CORAL_H

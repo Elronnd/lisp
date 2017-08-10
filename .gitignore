@@ -4,6 +4,6 @@
 .*.swm
 .*.swl
 
-lisp
+coral
 
 *.o
