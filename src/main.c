@@ -153,7 +153,7 @@ int main(void) {
 
 		printf("Ast: "); printast(a); putchar('\n');
 
-		Lval l = runast(a, false);
+		Lval l = runast(a, true);
 
 		char foo[2048];
 		valtostr(l, foo);
