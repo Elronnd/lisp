@@ -4,7 +4,7 @@
 #include <ctype.h>
 
 
-Ast tokenize(const char *str, lint *index) {
+Token_tree tokenize(const char *str, lint *index) {
 #define munch_whitespace \
 	while (isspace(str[*index])) { \
 		(*index)++; \
@@ -40,7 +40,7 @@ Ast tokenize(const char *str, lint *index) {
 
 
 
-	Ast tmp = {.isval = false, .numchilds = 0};
+	Token_tree ret = {.numargs = 0};
 
 	munch_whitespace;
 
@@ -51,9 +51,13 @@ Ast tokenize(const char *str, lint *index) {
 
 	munch_whitespace;
 
-	tmp.op = NULL;
-
-	slurpstr(tmp.op);
+	if (str[*index] == '(') {
+		ret.first.istree = true;
+		*(ret.first.tree) = tokenize(str, index);
+	} else {
+		ret.first.istree = false;
+		slurpstr(ret.first.str);
+	}
 
 	munch_whitespace;
 
@@ -62,19 +66,20 @@ precheck:
 	if (str[*index] == ')') {
 		(*index)++;
 		munch_whitespace;
-		return tmp;
+		return ret;
 	} else if (str[*index] == '(') {
-		tmp.childs = realloc(tmp.childs, (++tmp.numchilds) * sizeof(Ast));
-		tmp.childs[tmp.numchilds-1] = tokenize(str, index);
+		ret.args = realloc(ret.args, (++ret.numargs) * sizeof(Token));
+
+		ret.args[ret.numargs-1].istree = true;
+		*(ret.args[ret.numargs-1].tree) = tokenize(str, index);
 		goto precheck;
 	} else {
-		tmp.childs = realloc(tmp.childs, (++tmp.numchilds) * sizeof(Ast));
-		tmp.childs[tmp.numchilds-1].isval = true;
-		tmp.childs[tmp.numchilds-1].val.type = LTYPE_UNDECIDED;
-		slurpstr(tmp.childs[tmp.numchilds-1].val.undecided);
+		ret.args = realloc(ret.args, (++ret.numargs) * sizeof(Token));
+		ret.args[ret.numargs-1].istree = false;
+		slurpstr(ret.args[ret.numargs-1].str);
 		munch_whitespace;
 		goto precheck;
 	}
 
-	return tmp;
+	return ret;
 }

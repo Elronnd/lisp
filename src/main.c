@@ -145,16 +145,16 @@ int main(void) {
 			break;
 
 		foo = 0;
-		Ast a = tokenize(buf, &foo);
+		Token_tree t = tokenize(buf, &foo);
 
-		parseast(&a);
+		Ast a = parseast(&t);
 
 		printf("Ast: "); printast(a); putchar('\n');
 
-		Lval t = runast(a, false);
+		Lval l = runast(a, false);
 
 		char foo[2048];
-		valtostr(t, foo);
+		valtostr(l, foo);
 		printf("%s\n", foo);
 
 

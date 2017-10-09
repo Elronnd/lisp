@@ -10,8 +10,6 @@
 
 
 typedef enum {
-	LTYPE_UNDECIDED = 1, // char*.  We have lazy parsing, which can be good, or bad, just like python.
-			// Good for performance, but bad if something like this happens: (if true (+ 5 7) (- 5 "asdf")).  That's not an error
 	LTYPE_INT,      // long long
 	LTYPE_FLOAT,    // long double
 	LTYPE_STR,      // char*
@@ -40,6 +38,21 @@ typedef struct {
 	char *varname;
 	Ast *ast;
 } Lval;
+
+typedef struct Token_tree Token_tree;
+typedef struct {
+	Token_tree *tree;
+	char *str;
+	bool istree;
+} Token;
+
+struct Token_tree {
+	Token first;
+
+	lint numargs;
+
+	Token *args; // can be NULL if numargs == 0
+};
 
 
 struct Ast {
@@ -135,11 +148,11 @@ static function builtins[] = {
 
 
 // token.c
-Ast tokenize(const char *str, lint *index);
+Token_tree tokenize(const char *str, lint *index);
 
 // parse.c
 void valtostr(Lval val, char bufout[2048]);
-void parseast(Ast *ast);
+Ast parseast(Token_tree *t);
 
 
 _Noreturn extern void _error(const char *file, lint line, const char *fmt, ...);

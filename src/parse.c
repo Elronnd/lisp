@@ -47,42 +47,35 @@ static bool couldbefloat(const char *str, real *out) {
 }
 
 
-static Lval parse_lval(Lval val) {
+static Lval parse_lval(char *str) {
 	Lval tmp;
 
-	if (val.type == LTYPE_UNDECIDED) {
-		if (val.undecided[0] == '"') {
-			tmp.type = LTYPE_STR;
-			tmp.str = malloc(strlen(val.undecided));
+	if (str[0] == '"') {
+		tmp.type = LTYPE_STR;
+		tmp.str = malloc(strlen(str));
 
-			val.undecided[strlen(val.undecided)-1] = '\0';
-			// +1 to get rid of the "
-			strcpy(tmp.str, val.undecided + 1);
-			free(val.undecided);
-
-			return tmp;
-		} else if ((val.undecided[0] == '#') && (strlen(val.undecided) == 2) && (val.undecided[1] == 'f' || val.undecided[1] == 't')) {
-			tmp.type = LTYPE_BOOL;
-			switch (val.undecided[1]) {
-				case 'f': tmp.boolean = false; break;
-				case 't': tmp.boolean = true; break;
-			}
-
-			return tmp;
-		} else if (couldbeint(val.undecided, &tmp.integer)) {
-			tmp.type = LTYPE_INT;
-			return tmp;
-		} else if (couldbefloat(val.undecided, &tmp.lfloat)) {
-			tmp.type = LTYPE_FLOAT;
-			return tmp;
-		} else {
-			val.type = LTYPE_VARIABLE;
-			val.varname = val.undecided;
-			return val;
+		str[strlen(str)-1] = '\0';
+		// +1 to get rid of the "
+		strcpy(tmp.str, str + 1);
+		free(str);
+	} else if ((str[0] == '#') && (strlen(str) == 2) && (str[1] == 'f' || str[1] == 't')) {
+		tmp.type = LTYPE_BOOL;
+		switch (str[1]) {
+			case 'f': tmp.boolean = false; break;
+			case 't': tmp.boolean = true; break;
 		}
+	} else if (couldbeint(str, &tmp.integer)) {
+		tmp.type = LTYPE_INT;
+	} else if (couldbefloat(str, &tmp.lfloat)) {
+		tmp.type = LTYPE_FLOAT;
 	} else {
-		return val;
+		tmp.type = LTYPE_VARIABLE;
+		tmp.varname = malloc(strlen(str));
+		strcpy(tmp.varname, str);
+		free(str);
 	}
+
+	return tmp;
 }
 
 void valtostr(Lval val, char bufout[2048]) {
@@ -96,12 +89,31 @@ void valtostr(Lval val, char bufout[2048]) {
 }
 
 
-void parseast(Ast *ast) {
-	if (ast->isval) {
-		ast->val = parse_lval(ast->val);
+Ast parseast(Token_tree *t) {
+	Ast ret = {.isval = false};
+
+	if (t->first.istree) {
+		error("Functions cannot be trees yet, they must be literals.");
 	} else {
-		for (lint i = 0; i < ast->numchilds; i++) {
-			parseast(&(ast->childs[i]));
+		ret.op = t->first.str; // reuse this memory
+	}
+
+
+	ret.numchilds = t->numargs;
+	ret.childs = malloc(sizeof(struct Ast) * ret.numchilds);
+
+
+	for (lint i = 0; i < t->numargs; i++) {
+		if (t->args[i].istree) {
+			ret.childs[i] = parseast(t->args[i].tree);
+			ret.childs[i].isval = false;
+		} else {
+			ret.childs[i].isval = true;
+			ret.childs[i].val = parse_lval(t->args[i].str);
 		}
 	}
+
+	free(t->args);
+
+	return ret;
 }
