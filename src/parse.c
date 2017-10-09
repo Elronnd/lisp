@@ -57,7 +57,6 @@ static Lval parse_lval(char *str) {
 		str[strlen(str)-1] = '\0';
 		// +1 to get rid of the "
 		strcpy(tmp.str, str + 1);
-		free(str);
 	} else if ((str[0] == '#') && (strlen(str) == 2) && (str[1] == 'f' || str[1] == 't')) {
 		tmp.type = LTYPE_BOOL;
 		switch (str[1]) {
@@ -72,7 +71,6 @@ static Lval parse_lval(char *str) {
 		tmp.type = LTYPE_VARIABLE;
 		tmp.varname = malloc(strlen(str));
 		strcpy(tmp.varname, str);
-		free(str);
 	}
 
 	return tmp;
@@ -89,31 +87,29 @@ void valtostr(Lval val, char bufout[2048]) {
 }
 
 
-Ast parseast(Token_tree *t) {
+Ast parseast(Token_tree t) {
 	Ast ret = {.isval = false};
 
-	if (t->first.istree) {
+	if (t.first.istree) {
 		error("Functions cannot be trees yet, they must be literals.");
 	}
-	ret.op = t->first.str; // reuse this memory
+	ret.op = malloc(strlen(t.first.str)+1);
+	strcpy(ret.op, t.first.str);
 
 
-	ret.numchilds = t->numargs;
+	ret.numchilds = t.numargs;
 	ret.childs = calloc(sizeof(struct Ast), ret.numchilds);
 
 
-	for (lint i = 0; i < t->numargs; i++) {
-		if (t->args[i].istree) {
-			ret.childs[i] = parseast(t->args[i].tree);
-			free(t->args[i].tree);
+	for (lint i = 0; i < t.numargs; i++) {
+		if (t.args[i].istree) {
+			ret.childs[i] = parseast(*t.args[i].tree);
 			ret.childs[i].isval = false;
 		} else {
 			ret.childs[i].isval = true;
-			ret.childs[i].val = parse_lval(t->args[i].str);
+			ret.childs[i].val = parse_lval(t.args[i].str);
 		}
 	}
-
-	free(t->args);
 
 	return ret;
 }

@@ -120,7 +120,7 @@ Token_tree tokenize(const char *str, lint *index);
 
 // parse.c
 void valtostr(Lval val, char bufout[2048]);
-Ast parseast(Token_tree *t);
+Ast parseast(Token_tree t);
 
 
 _Noreturn extern void _error(const char *file, lint line, const char *fmt, ...);

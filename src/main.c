@@ -163,6 +163,26 @@ static void freeast(Ast ast) {
 }
 
 
+static void freetokentree(Token_tree t) {
+	if (t.first.istree) {
+		freetokentree(*t.first.tree);
+	} else {
+		free(t.first.str);
+	}
+
+	for (lint i = 0; i < t.numargs; i++) {
+		if (t.args[i].istree) {
+			freetokentree(*t.args[i].tree);
+		} else {
+			free(t.args[i].str);
+		}
+	}
+	if (t.numargs) {
+		free(t.args);
+	}
+}
+
+
 
 
 int main(void) {
@@ -187,12 +207,12 @@ int main(void) {
 		foo = 0;
 		Token_tree t = tokenize(buf, &foo);
 
-		Ast a = parseast(&t);
+		Ast a = parseast(t);
+
 
 		printf("Ast: "); printast(a); putchar('\n');
 
 		Lval l = runast(a, true);
-		freeast(a);
 
 		char foo[2048];
 		valtostr(l, foo);
@@ -200,6 +220,9 @@ int main(void) {
 		printf("%s\n", foo);
 
 
+		freeast(a);
+		freeval(l);
+		freetokentree(t);
 		free(buf);
 	}
 

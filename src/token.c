@@ -40,7 +40,7 @@ Token_tree tokenize(const char *str, lint *index) {
 
 
 
-	Token_tree ret = {.numargs = 0};
+	Token_tree ret = {.numargs = 0, .args = NULL};
 
 	munch_whitespace;
 
