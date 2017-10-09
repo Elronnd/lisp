@@ -94,13 +94,12 @@ Ast parseast(Token_tree *t) {
 
 	if (t->first.istree) {
 		error("Functions cannot be trees yet, they must be literals.");
-	} else {
-		ret.op = t->first.str; // reuse this memory
 	}
+	ret.op = t->first.str; // reuse this memory
 
 
 	ret.numchilds = t->numargs;
-	ret.childs = malloc(sizeof(struct Ast) * ret.numchilds);
+	ret.childs = calloc(sizeof(struct Ast), ret.numchilds);
 
 
 	for (lint i = 0; i < t->numargs; i++) {

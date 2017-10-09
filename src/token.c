@@ -75,6 +75,7 @@ precheck:
 		goto precheck;
 	} else {
 		ret.args = realloc(ret.args, (++ret.numargs) * sizeof(Token));
+
 		ret.args[ret.numargs-1].istree = false;
 		slurpstr(ret.args[ret.numargs-1].str);
 		munch_whitespace;

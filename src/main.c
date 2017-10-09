@@ -128,7 +128,35 @@ Lval runast(Ast ast, bool runtime) {
 			vals[i] = runast(ast.childs[i], runtime);
 		}
 
-		return callfunc(ast.op, vals, ast.numchilds, runtime);
+		Lval ret = callfunc(ast.op, vals, ast.numchilds, runtime);
+		free(vals);
+		return ret;
+	}
+}
+
+static void freeast(Ast ast);
+
+static void freeval(Lval val) {
+	switch (val.type) {
+			case LTYPE_STR: free(val.str); break;
+			case LTYPE_RAW: free(val.raw); break;
+			case LTYPE_VARIABLE: free(val.varname); break;
+			case LTYPE_AST: freeast(*(val.ast)); break;
+			default: break;
+	}
+}
+
+
+static void freeast(Ast ast) {
+	free(ast.op);
+
+	if (ast.isval) {
+		freeval(ast.val);
+	} else {
+		for (lint i = 0; i < ast.numchilds; i++) {
+			freeast(ast.childs[i]);
+		}
+		free(ast.childs);
 	}
 }
 
@@ -149,8 +177,10 @@ int main(void) {
 
 		add_history(buf);
 
-		if (!strcmp(buf, "quit"))
+		if (!strcmp(buf, "quit")) {
+			free(buf);
 			break;
+		}
 
 		foo = 0;
 		Token_tree t = tokenize(buf, &foo);
@@ -160,9 +190,11 @@ int main(void) {
 		printf("Ast: "); printast(a); putchar('\n');
 
 		Lval l = runast(a, true);
+		freeast(a);
 
 		char foo[2048];
 		valtostr(l, foo);
+		freeval(l);
 		printf("%s\n", foo);
 
 
