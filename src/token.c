@@ -71,6 +71,7 @@ precheck:
 		ret.args = realloc(ret.args, (++ret.numargs) * sizeof(Token));
 
 		ret.args[ret.numargs-1].istree = true;
+		ret.args[ret.numargs-1].tree = malloc(sizeof(Token_tree));
 		*(ret.args[ret.numargs-1].tree) = tokenize(str, index);
 		goto precheck;
 	} else {

@@ -20,6 +20,7 @@ Lval builtin_strcat(Lval *vals, lint numvals) {
 
 
 		strcat(tmp.str, vals[i].str);
+		free(vals[i].str);
 	}
 
 	return tmp;

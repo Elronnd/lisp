@@ -7,6 +7,8 @@
 #include <editline/readline.h>
 
 
+static void freeast(Ast ast);
+static void freeval(Lval ast);
 
 /*
  * (+ (* 5 7) 3)
@@ -129,12 +131,12 @@ Lval runast(Ast ast, bool runtime) {
 		}
 
 		Lval ret = callfunc(ast.op, vals, ast.numchilds, runtime);
+
 		free(vals);
 		return ret;
 	}
 }
 
-static void freeast(Ast ast);
 
 static void freeval(Lval val) {
 	switch (val.type) {
@@ -194,7 +196,7 @@ int main(void) {
 
 		char foo[2048];
 		valtostr(l, foo);
-		freeval(l);
+
 		printf("%s\n", foo);
 
 

@@ -105,6 +105,7 @@ Ast parseast(Token_tree *t) {
 	for (lint i = 0; i < t->numargs; i++) {
 		if (t->args[i].istree) {
 			ret.childs[i] = parseast(t->args[i].tree);
+			free(t->args[i].tree);
 			ret.childs[i].isval = false;
 		} else {
 			ret.childs[i].isval = true;
