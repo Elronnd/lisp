@@ -10,6 +10,7 @@
 
 
 typedef enum {
+	LTYPE_UNDECIDED = 1, // char*.  Currently unused but maybe later
 	LTYPE_INT,      // long long
 	LTYPE_FLOAT,    // long double
 	LTYPE_STR,      // char*

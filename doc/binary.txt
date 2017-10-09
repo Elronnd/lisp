@@ -22,6 +22,8 @@ Any valid Ast must start with 0x01 and end in 0x02.  So *technically* the magic 
     An expression consists of 3 parts: a string, for the operator, a number, which is the number of childs Asts there are, and then the child Asts themselves.  A string consists of a length (8 unsigned bytes, which corresponds to size_t on a 64-bit system), followed by the string itself, followed by a NUL (0x00) terminator.  The length includes the null terminator.  The number is also 8 unsigned bytes.  It may be zero.  Thus, the shortest binary-valid program is this:
 
 0xdecaffad // magic number
+0x00 0x00 // Version 0.0
+0x000 // 80-bit float is available
 0x01 // Ast initializer
 0x00 // it's NOT a value: it must be an expression
 
@@ -41,7 +43,7 @@ VALUE
    * Undecided: string, 1
    * Integer: int64_t, 2
    * Floating point: long double (80-bit intel floating point taking up 128 bits, only present if specified as available in header), concatenated to double (64-bit floating point), 3.  On systems where an extended-precision float is available, that one should be used
-   * String: string, 4
+   * String: char*, 4.  Consists of a length (Integer) followed by the (null-terminated) string in question
    * Boolean: bool (1 byte should be read), 5
    * Raw: void*, 6.  Do not implement this it is unfinished
    * Variable: char*, 7.  Do not implement this either
@@ -60,6 +62,6 @@ Another:
 
 0x03 // initializer
 0x03 // floating point
-0xaa7ef9db22d0e5604001 // 80-bit representation
+0xaa7ef9db22d0e5604001000000000000 // 80-bit representation, padded to 128 bits
 0x40154fdf3b645a1d // 64-bit representation
 0x04 // terminator
