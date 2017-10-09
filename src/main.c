@@ -132,6 +132,12 @@ Lval runast(Ast ast, bool runtime) {
 
 		Lval ret = callfunc(ast.op, vals, ast.numchilds, runtime);
 
+		for (lint i = 0; i < ast.numchilds; i++) {
+			// if it's a value, it's already stored.  Otherwise it was computed, and thus newly allocated
+			if (!ast.childs[i].isval)
+				freeval(vals[i]);
+		}
+
 		free(vals);
 		return ret;
 	}

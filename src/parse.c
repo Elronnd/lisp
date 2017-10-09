@@ -16,7 +16,7 @@ static bool couldbeint(const char *str, lint *out) {
 	}
 	while (isspace(*endptr)) {  // look past the number for junk
 		endptr++;
-	}   
+	}
 
 	if (*endptr) {
 		return false;
