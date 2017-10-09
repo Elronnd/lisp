@@ -42,7 +42,13 @@ void printast(Ast ast) {
 		valtostr(ast.val, buf);
 		printf("%s", buf);
 	} else {
-		printf("(%s ", ast.op);
+		printf("(%s", ast.op);
+
+		// if there are no arguments, just print (op).  But if there is an argument, print a space
+		if (ast.numchilds) {
+			putchar(' ');
+		}
+
 		for (lint i = 0; i < ast.numchilds; i++) {
 			printast(ast.childs[i]);
 
