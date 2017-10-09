@@ -11,7 +11,7 @@
 } while (0)
 
 #define pusharr(arr, num) do { \
-	for (int _i = 0; _i < num; _i++) { \
+	for (size_t _i = 0; _i < num; _i++) { \
 		push(arr[_i]); \
 	} \
 } while (0)
@@ -52,7 +52,7 @@ static void serialize_lval(uint8_t *ret, lint *len, Lval val) {
 		case LTYPE_RAW: error("Tried to serialize a value of type raw!"); break;
 		case LTYPE_VARIABLE: error("Tried to serialize a variable!"); break;
 		case LTYPE_AST: serialize_ast(ret, len, *(val.ast)); break;
-		case LTYPE_VOID: break; // so the compiler doesn't complain
+		case LTYPE_VOID: case LTYPE_ANY: break; // so the compiler doesn't complain
 	}
 	push(0x04); // value terminator
 }
@@ -101,3 +101,5 @@ uint8_t *binary_serialize(Ast ast, lint *len) {
 	lint endmagic = 0xdefeca7e;
 	push_longint(endmagic, lint);
 
+	return ret;
+}
